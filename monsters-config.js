@@ -57,8 +57,8 @@ export const monstersConfig = [
     coinReward: { gold: 0, silver: 10, bronze: 5 },
   },
   {
-    id: "ancient_specter",
-    name: "Ancient Specter",
+    id: "centaur",
+    name: "Centaur",
     power: 35,
     agility: 15,
     location: "ruins",

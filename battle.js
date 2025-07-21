@@ -40,6 +40,8 @@ export function playerAttack(monster) {
   const power = getPlayerWeaponPower();
   const damage = calculateDamage(power, player.agility);
   monster.currentHealth -= damage;
+  // Ensure monster health doesn't go below zero
+  monster.currentHealth = Math.max(0, monster.currentHealth);
   return damage;
 }
 
@@ -51,8 +53,10 @@ export function playerAttack(monster) {
 export function monsterAttack(monster) {
   const power = monster.power;
   const damage = calculateDamage(power, monster.agility);
-  player.health -= damage;
-  updatePlayer({ health: player.health });
+  // Reduce player health and prevent negative values
+  const newHealth = Math.max(0, player.health - damage);
+  player.health = newHealth;
+  updatePlayer({ health: newHealth });
   return damage;
 }
 

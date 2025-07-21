@@ -15,15 +15,16 @@ import {
  * @param {Object} monsterConfig - monster data from config
  */
 export function renderArena(container, monsterConfig) {
-  // Initialize monster instance with dynamic health
+  // Initialize monster with full health
   const monster = {
     ...monsterConfig,
     currentHealth: monsterConfig.power * 5,
   };
-  // Player current health
+
+  // Track player health locally for display
   let playerCurrentHealth = player.health;
 
-  // Render initial arena
+  // Render initial arena UI
   container.innerHTML = `
     <h2>Battle Arena</h2>
     <div id="battleInfo">
@@ -40,13 +41,13 @@ export function renderArena(container, monsterConfig) {
   const attackBtn = document.getElementById("attackBtn");
 
   attackBtn.addEventListener("click", () => {
-    // Player attacks
+    // Player attacks first
     const dmgToMonster = playerAttack(monster);
     monster.currentHealth = Math.max(0, monster.currentHealth);
     battleLog.innerHTML += `<p>You deal ${dmgToMonster} damage to ${monster.name}.</p>`;
     monsterHPSpan.textContent = monster.currentHealth;
 
-    // Check if monster defeated
+    // Check for monster defeat
     if (monster.currentHealth <= 0) {
       attackBtn.disabled = true;
       handleVictory(monster);
@@ -60,18 +61,18 @@ export function renderArena(container, monsterConfig) {
 
     // Monster attacks
     const dmgToPlayer = monsterAttack(monster);
-    playerCurrentHealth = Math.max(0, playerCurrentHealth);
+    // Subtract damage from local health and clamp
+    playerCurrentHealth = Math.max(0, playerCurrentHealth - dmgToPlayer);
     battleLog.innerHTML += `<p>${monster.name} deals ${dmgToPlayer} damage to you.</p>`;
     playerHPSpan.textContent = playerCurrentHealth;
 
-    // Check if player defeated
+    // Check for player defeat
     if (playerCurrentHealth <= 0) {
       attackBtn.disabled = true;
       handleDefeat();
       battleLog.innerHTML += `<p>You have been defeated...</p>`;
       battleLog.innerHTML += `<button id="retryBtn">Retry</button>`;
       document.getElementById("retryBtn").addEventListener("click", () => {
-        // Reload page to town square
         window.location.href = "index.html";
       });
     }
