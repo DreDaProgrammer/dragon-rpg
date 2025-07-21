@@ -144,34 +144,67 @@ header h1 {
 .store-tabs button:hover {
   background: linear-gradient(to bottom, #448, #335);
 }
+
+/* Store List (horizontal, scrollable) */
 .store-list {
   list-style: none;
-  padding: 0;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  flex-wrap: nowrap; /* no wrapping */
+  overflow-x: auto; /* horizontal scroll */
+  justify-content: flex-start;
+  margin: 0 auto;
 }
 .store-list li {
+  flex: 0 0 200px; /* fixed width */
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #5a3;
   border-radius: 6px;
   padding: 10px;
-  width: 250px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-right: 16px; /* space + divider */
+}
+/* Divider between items */
+.store-list li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: -8px;
+  bottom: 10%;
+  width: 2px;
+  background: #5a3;
+}
+.store-list li:last-child {
+  margin-right: 0;
+}
+
+/* Quantity input styling */
+.store-list li .qty-input {
+  width: 60px;
+  margin: 8px 0;
   text-align: center;
 }
+
+/* Push button to bottom */
 .store-list li button {
-  background: linear-gradient(to bottom, #227, #115);
-  border: 1px solid #113;
-  padding: 5px 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px #000;
-  color: #f8f0e3;
-  font-family: "Cinzel", serif;
-  margin-top: 10px;
+  margin-top: auto;
 }
-.store-list li button:hover {
-  background: linear-gradient(to bottom, #339, #226);
+
+/* Scrollbar styling (WebKit) */
+.store-list::-webkit-scrollbar {
+  height: 8px;
+}
+.store-list::-webkit-scrollbar-track {
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 4px;
+}
+.store-list::-webkit-scrollbar-thumb {
+  background: #5a3;
+  border-radius: 4px;
 }
 
 /* Location List */
