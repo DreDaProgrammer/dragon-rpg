@@ -1,5 +1,5 @@
 // map.js
-import { locationsConfig } from "./map-config.js";
+import { locationsConfig } from "./config/map-config.js";
 import { getMonstersByLocation } from "./monsters.js";
 import { renderArena } from "./arena.js";
 import { renderStore } from "./store.js"; // ← import your store renderer

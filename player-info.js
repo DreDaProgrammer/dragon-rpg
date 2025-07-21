@@ -1,5 +1,5 @@
 /* player-info.js */
-import { defaultPlayerConfig, STORAGE_KEY } from "./player-config.js";
+import { defaultPlayerConfig, STORAGE_KEY } from "./config/player-config.js";
 
 // Load and save utilities
 function loadData(key, defaultValue) {

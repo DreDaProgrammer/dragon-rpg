@@ -1,7 +1,7 @@
 // monsters.js
 // Logic for accessing monster configurations and selecting monsters for battles
 
-import { monstersConfig } from "./monsters-config.js";
+import { monstersConfig } from "./config/monsters-config.js";
 
 /**
  * Get the full list of monsters

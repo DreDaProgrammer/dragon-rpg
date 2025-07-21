@@ -2,7 +2,7 @@
 // Battle mechanics: damage calculations, victory/defeat handlers
 
 import { player, updatePlayer, addXp, addCoins } from "./player-info.js";
-import { defaultPlayerConfig } from "./player-config.js";
+import { defaultPlayerConfig } from "./config/player-config.js";
 import { getToolById } from "./tools.js";
 
 /**
