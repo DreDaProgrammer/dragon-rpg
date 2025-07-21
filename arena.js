@@ -1,6 +1,7 @@
 // arena.js
 // Renders the battle UI with dynamic monster attacks & a 10-second counter prompt,
-// enforces one action per round, and shows "Attack" (never "Attack with Shield") plus a separate "Defend" button.
+// enforces one action per round, shows only “Attack” + “Defend”,
+// and always updates the current HP display.
 
 import { player, updatePlayer } from "./player-info.js";
 import { defaultPlayerConfig } from "./config/player-config.js";
@@ -18,11 +19,18 @@ function disableActionButtons() {
     .forEach((btn) => (btn.disabled = true));
 }
 
+/** Enable them again after the round */
+function enableActionButtons() {
+  document
+    .querySelectorAll("#battle-actions button")
+    .forEach((btn) => (btn.disabled = false));
+}
+
 /** Kick off a full round: player acts, then monster acts */
 async function startRound(useTool) {
   disableActionButtons();
   await handleAttack(useTool);
-  renderActionButtons();
+  enableActionButtons();
 }
 
 /**
@@ -85,8 +93,12 @@ export function renderArena(container, monConfig) {
   container.innerHTML = `
     <h2>Battle: ${monConfig.name}</h2>
     <div id="battleInfo">
-      <p>Your HP: <span id="playerHp">${player.health}</span></p>
-      <p>${monConfig.name} HP: <span id="monsterHp">${currentMonster.currentHealth}</span></p>
+      <p><strong>Hero:</strong> <span id="playerHp">${player.health}</span> / ${
+    defaultPlayerConfig.health
+  } HP</p>
+      <p><strong>${monConfig.name}:</strong> <span id="monsterHp">${
+    currentMonster.currentHealth
+  }</span> / ${monConfig.power * 5} HP</p>
     </div>
     <div id="inventory"><h3>Inventory</h3><ul id="inventory-list"></ul></div>
     <div id="battle-actions"></div>
@@ -97,14 +109,22 @@ export function renderArena(container, monConfig) {
 
   renderInventory();
   renderActionButtons();
+  updateHPDisplays();
 
   document
     .getElementById("exitBtn")
     .addEventListener("click", () => window.location.reload());
 }
 
+/** Always update the numeric HP spans */
+function updateHPDisplays() {
+  document.getElementById("playerHp").textContent = player.health;
+  document.getElementById("monsterHp").textContent =
+    currentMonster.currentHealth;
+}
+
 /**
- * Display inventory with Use (for consumables) or Equip (for tools) buttons.
+ * Display inventory with Use (for consumables) or Equip (for tools/shields).
  */
 function renderInventory() {
   const invList = document.getElementById("inventory-list");
@@ -130,9 +150,7 @@ function renderInventory() {
             defaultPlayerConfig.health,
             player.health + tool.effect.heal
           );
-          updatePlayer({ health: player.health });
           appendLog(`Used ${tool.name}, healed ${tool.effect.heal} HP.`);
-          document.getElementById("playerHp").textContent = player.health;
         }
         if (tool.effect.power) {
           buffPower += tool.effect.power;
@@ -142,15 +160,19 @@ function renderInventory() {
         }
         if (tool.effect.agility) {
           player.agility += tool.effect.agility;
-          updatePlayer({ agility: player.agility });
           appendLog(`Used ${tool.name}, +${tool.effect.agility} agility.`);
         }
         player.tools.splice(player.tools.indexOf(id), 1);
-        updatePlayer({ tools: player.tools });
+        updatePlayer({
+          health: player.health,
+          tools: player.tools,
+          agility: player.agility,
+        });
         renderInventory();
+        updateHPDisplays();
       };
     } else {
-      // Equipable tool or shield
+      // Equipable
       const isEquipped = equippedToolId === id;
       btn.textContent = isEquipped ? "Equipped" : "Equip";
       btn.disabled = isEquipped;
@@ -171,7 +193,7 @@ function renderInventory() {
 
 /**
  * Render action buttons:
- * - Always an "Attack" button (uses fists or weapon)
+ * - Always an "Attack" button (fists or weapon)
  * - If a shield is equipped, show a separate "Defend" button
  */
 function renderActionButtons() {
@@ -211,7 +233,6 @@ async function handleAttack(useTool) {
   ) {
     appendLog(`You brace with ${getToolById(equippedToolId).name}.`);
   } else {
-    // Weapon or fists
     const power =
       useTool && equippedToolId
         ? getToolById(equippedToolId).power + buffPower
@@ -227,8 +248,7 @@ async function handleAttack(useTool) {
     0,
     currentMonster.currentHealth - dmg
   );
-  document.getElementById("monsterHp").textContent =
-    currentMonster.currentHealth;
+  updateHPDisplays();
   if (currentMonster.currentHealth <= 0) {
     appendLog(`You’ve slain the ${currentMonster.name}!`);
     handleVictory(currentMonster);
@@ -242,7 +262,6 @@ async function handleAttack(useTool) {
     Math.floor(Math.random() * (currentMonster.agility + 1));
 
   if (!dodged) {
-    // If defending with a shield, block up to defense value
     if (
       useTool &&
       equippedToolId &&
@@ -255,8 +274,8 @@ async function handleAttack(useTool) {
     }
     player.health = Math.max(0, player.health - mdmg);
     updatePlayer({ health: player.health });
-    document.getElementById("playerHp").textContent = player.health;
     appendLog(`${currentMonster.name} deals ${mdmg} damage.`);
+    updateHPDisplays();
   }
 
   if (player.health <= 0) {
