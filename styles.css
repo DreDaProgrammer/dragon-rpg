@@ -260,3 +260,10 @@ header h1 {
 #battleLog p {
   margin: 5px 0;
 }
+
+/* Make disabled buttons look greyed-out */
+button:disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
