@@ -65,5 +65,14 @@ export const monstersConfig = [
     xpReward: 100,
     coinReward: { gold: 2, silver: 0, bronze: 0 },
   },
+  {
+    id: "dragon",
+    name: "Dragon",
+    power: 500,
+    agility: 50,
+    location: "lair",
+    xpReward: 500,
+    coinReward: { gold: 2, silver: 0, bronze: 0 },
+  },
   // Add or adjust monsters here
 ];

@@ -36,4 +36,9 @@ export const locationsConfig = [
     name: "Store",
     description: "This is where you buy and sell stuff.",
   },
+  {
+    id: "lair",
+    name: "Dragon's Lair",
+    description: "Only the brave dare visit here!",
+  },
 ];
