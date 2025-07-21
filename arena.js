@@ -62,9 +62,7 @@ export function renderArena(container, monConfig) {
     <button id="exitBtn">Flee to Town</button>
   `;
 
-  document
-    .getElementById("attackBtn")
-    .addEventListener("click", () => tryAttack());
+  document.getElementById("attackBtn").addEventListener("click", tryAttack);
   document
     .getElementById("exitBtn")
     .addEventListener("click", () => window.location.reload());
@@ -73,7 +71,7 @@ export function renderArena(container, monConfig) {
   renderInventory();
   updateHPDisplays();
   appendLog(
-    "Battle begins! Equip your tools, then Attack with A, block with S."
+    "Battle begins! Equip tools, then Attack with A; block with S if shield equipped."
   );
 }
 
@@ -162,7 +160,7 @@ function resolveEvade(didBlock, res) {
 
   const shieldId = player.equippedShieldId;
   if (didBlock && shieldId) {
-    const def = getToolById(shieldId).effect?.defense || 0;
+    const def = getToolById(shieldId).effect.defense;
     const blocked = Math.min(def, dmg);
     dmg -= blocked;
     appendLog(`Blocked ${blocked} damage with shield.`);
@@ -199,7 +197,7 @@ function renderInventory() {
   const pList = document.getElementById("potion-list");
   cList.innerHTML = sList.innerHTML = pList.innerHTML = "";
 
-  for (const id of player.tools) {
+  player.tools.forEach((id) => {
     const tool = getToolById(id);
     const li = document.createElement("li");
     li.textContent = tool.name + " ";
@@ -269,5 +267,5 @@ function renderInventory() {
       }
       cList.appendChild(li).appendChild(btn);
     }
-  }
+  });
 }
