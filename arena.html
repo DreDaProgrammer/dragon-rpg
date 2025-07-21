@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dragon RPG — Arena</title>
+    <link rel="stylesheet" href="arena.css" />
+  </head>
+  <body>
+    <div id="content">
+      <!-- arena.js will populate this -->
+    </div>
+
+    <!-- Core scripts -->
+    <script src="player-info.js"></script>
+    <script src="tools.js"></script>
+    <script src="config/tools-config.js"></script>
+    <script src="config/monsters-config.js"></script>
+    <script src="battle.js"></script>
+    <script src="arena.js"></script>
+
+    <!-- Initialize the arena -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Pick the first monster for demo
+        const monster = window.monstersConfig[0];
+        const container = document.getElementById("content");
+        window.renderArena(container, monster);
+      });
+    </script>
+  </body>
+</html>
