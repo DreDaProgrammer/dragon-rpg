@@ -6,13 +6,17 @@
     <title>Town Square - The Dragon’s Shadow</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body
+    class="location-view"
+    style="background-image: url('assets/locations/town_square.png')"
+  >
     <header>
       <h1>Town Square</h1>
     </header>
     <main>
       <p>You stand in the bustling town square of Embervale.</p>
       <div class="menu">
+        <button id="newGameBtn">New Game</button>
         <button id="statsBtn">Check Stats</button>
         <button id="mapBtn">Open Map</button>
       </div>
@@ -32,12 +36,24 @@
     <script type="module" src="battle.js"></script>
 
     <script type="module">
+      import { STORAGE_KEY, defaultPlayerConfig } from "./player-config.js";
       import { showStats } from "./player-info.js";
       import { renderMap } from "./map.js";
 
+      // New Game: reset player data
+      document.getElementById("newGameBtn").addEventListener("click", () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPlayerConfig));
+        window.location.reload();
+      });
+
+      // Check Stats
       document.getElementById("statsBtn").addEventListener("click", () => {
+        // Clear background
+        document.body.style.backgroundImage = "";
         showStats(document.getElementById("content"));
       });
+
+      // Open Map
       document.getElementById("mapBtn").addEventListener("click", () => {
         renderMap(document.getElementById("content"));
       });
