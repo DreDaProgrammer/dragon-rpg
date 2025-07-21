@@ -26,4 +26,19 @@ export const locationsConfig = [
     name: "Ancient Ruins",
     description: "Old ruins haunted by ancient specters.",
   },
+  {
+    id: "town_square",
+    name: "Town Square",
+    description: "This is where you call home.",
+  },
+  {
+    id: "store",
+    name: "Store",
+    description: "This is where you buy and sell stuff.",
+  },
+  {
+    id: "lair",
+    name: "Dragon's Lair",
+    description: "Only the brave dare visit here!",
+  },
 ];

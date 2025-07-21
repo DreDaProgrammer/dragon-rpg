@@ -3,9 +3,9 @@ export const STORAGE_KEY = "dragonRPG_player";
 
 export const defaultPlayerConfig = {
   coins: {
-    gold: 0,
-    silver: 0,
-    bronze: 0,
+    gold: 1000,
+    silver: 1000,
+    bronze: 1000,
   },
   health: 100,
   xp: 0,

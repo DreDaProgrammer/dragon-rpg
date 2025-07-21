@@ -1,7 +1,7 @@
 // tools.js
 // Logic for accessing and using tool configurations
 
-import { toolsConfig } from "./tools-config.js";
+import { toolsConfig } from "./config/tools-config.js";
 import { player, updatePlayer } from "./player-info.js";
 
 /**
