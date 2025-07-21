@@ -1,4 +1,18 @@
-/* styles.css - Dragon RPG Theme (Centered Text) */
+/* styles.css - Dragon RPG Theme (Centered Text & Side-by-Side Monsters) */
+
+/* Intro Screen */
+.intro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #000;
+}
+.intro-container img {
+  max-width: 100%;
+  max-height: 100%;
+  border: 2px solid #d4af37;
+}
 
 /* Import medieval font */
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap");
@@ -28,7 +42,6 @@ header {
   text-align: center;
   margin-bottom: 20px;
 }
-
 header h1 {
   font-size: 2rem;
 }
@@ -39,7 +52,6 @@ header h1 {
   gap: 10px;
   margin: 20px 0;
 }
-
 .menu button {
   background: linear-gradient(to bottom, #b33, #800);
   border: 1px solid #500;
@@ -61,26 +73,19 @@ header h1 {
   max-width: 600px;
   margin: 40px auto;
   box-shadow: 0 0 15px #000;
-  text-align: center;
 }
-
 .welcome-screen h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  text-align: center;
 }
-
 .welcome-screen p {
   margin: 15px 0;
-  text-align: center;
 }
-
 .welcome-screen .hero {
   font-size: 1.5rem;
   color: #d4af37;
   margin: 20px 0;
 }
-
 .welcome-screen button {
   background: linear-gradient(to bottom, #b33, #800);
   border: 1px solid #500;
@@ -96,16 +101,15 @@ header h1 {
 
 #content {
   margin-top: 20px;
-  text-align: center;
 }
 
+/* Store Styles */
 .store-tabs {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-bottom: 10px;
 }
-
 .store-tabs button {
   flex: 1;
   background: linear-gradient(to bottom, #337, #224);
@@ -119,22 +123,22 @@ header h1 {
 .store-tabs button:hover {
   background: linear-gradient(to bottom, #448, #335);
 }
-
 .store-list {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
-
 .store-list li {
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #5a3;
   border-radius: 6px;
   padding: 10px;
-  margin: 0 auto 10px;
-  max-width: 400px;
+  width: 250px;
   text-align: center;
 }
-
 .store-list li button {
   background: linear-gradient(to bottom, #227, #115);
   border: 1px solid #113;
@@ -149,23 +153,24 @@ header h1 {
   background: linear-gradient(to bottom, #339, #226);
 }
 
+/* Map Styles */
 .location-list {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
-
 .location-list li {
-  margin-bottom: 10px;
+  margin: 0;
 }
-
 .location-list button {
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #5a3;
   color: #f8f0e3;
   padding: 10px;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
+  width: 200px;
   text-align: center;
   border-radius: 6px;
   box-shadow: 0 2px 5px #000;
@@ -175,40 +180,37 @@ header h1 {
   background: rgba(30, 30, 30, 0.9);
 }
 
+/* Monster Styles */
 .monster-list {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
-
 .monster-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #5a3;
   border-radius: 6px;
   padding: 10px;
-  margin: 0 auto 10px;
-  max-width: 400px;
+  width: 200px;
   text-align: center;
 }
-
-.monster-list li button {
-  background: linear-gradient(to bottom, #227, #115);
-  border: 1px solid #113;
-  padding: 5px 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px #000;
-  color: #f8f0e3;
-  font-family: "Cinzel", serif;
-  margin-top: 10px;
-}
-.monster-list li button:hover {
-  background: linear-gradient(to bottom, #339, #226);
+.monster-img {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
 }
 
+/* Arena & Battle */
 #battleInfo p {
   margin: 5px 0;
-  text-align: center;
 }
-
 #attackBtn {
   background: linear-gradient(to bottom, #b33, #800);
   border: 1px solid #500;
@@ -223,7 +225,6 @@ header h1 {
 #attackBtn:hover {
   background: linear-gradient(to bottom, #c44, #900);
 }
-
 #battleLog {
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #5a3;

@@ -1,5 +1,5 @@
 // map.js
-// Renders the location selection and available monsters per location
+// Renders the location selection and available monsters with images per location
 
 import { locationsConfig } from "./map-config.js";
 import { getMonstersByLocation } from "./monsters.js";
@@ -14,7 +14,7 @@ export function renderMap(container) {
     <h2>Map</h2>
     <ul class="location-list"></ul>
   `;
-  const list = container.querySelector("ul");
+  const list = container.querySelector(".location-list");
 
   locationsConfig.forEach((loc) => {
     const li = document.createElement("li");
@@ -27,7 +27,7 @@ export function renderMap(container) {
 }
 
 /**
- * Render a specific location view with monsters
+ * Render a specific location view with monsters and their images
  * @param {HTMLElement} container
  * @param {string} locationId
  */
@@ -45,12 +45,28 @@ function renderLocation(container, locationId) {
   const list = container.querySelector(".monster-list");
   monsters.forEach((mon) => {
     const li = document.createElement("li");
+    // Monster image
+    const img = document.createElement("img");
+    img.src = `assets/monsters/${mon.id}.png`;
+    img.alt = mon.name;
+    img.classList.add("monster-img");
+
+    // Monster info
+    const info = document.createElement("div");
+    info.innerHTML = `
+      <strong>${mon.name}</strong><br />
+      Power: ${mon.power}, Agility: ${mon.agility}
+    `;
+
+    // Fight button
     const fightBtn = document.createElement("button");
     fightBtn.textContent = `Fight ${mon.name}`;
     fightBtn.addEventListener("click", () => {
       renderArena(container, mon);
     });
-    li.innerHTML = `<strong>${mon.name}</strong> (Power: ${mon.power}, Agility: ${mon.agility}) `;
+
+    li.appendChild(img);
+    li.appendChild(info);
     li.appendChild(fightBtn);
     list.appendChild(li);
   });
