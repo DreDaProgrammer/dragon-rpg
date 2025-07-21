@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dragon RPG — Arena</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- The battle UI will be rendered here by renderArena() -->
+    <div id="content"></div>
+
+    <script type="module">
+      import { renderArena } from "./arena.js";
+      import { monstersConfig } from "./config/monsters-config.js";
+
+      // For now, pick the first monster in your config.
+      const monster = monstersConfig[0];
+
+      // Render the arena into the #content div.
+      const container = document.getElementById("content");
+      renderArena(container, monster);
+    </script>
+  </body>
+</html>
