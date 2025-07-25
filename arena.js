@@ -1,32 +1,27 @@
 // arena.js
-// Battle UI with full inventory (combat tools, shields, potions),
-// key-driven Attack (A), block (S), and seamless tool switching.
+// Fully turn-based combat: Player chooses an action, then monster acts.
+// Inventory for combat tools, shields, and potions remains usable between turns.
 
 import { player, updatePlayer } from "./player-info.js";
 import { defaultPlayerConfig } from "./config/player-config.js";
 import { getToolById } from "./tools.js";
-import { monstersConfig } from "./config/monsters-config.js";
 import { handleVictory, handleDefeat } from "./battle.js";
 
 let currentMonster;
 let buffPower = 0;
-let awaitingPlayer = true;
-let awaitingEvade = false;
-let currentMove;
-let countdownInterval;
-let evadeTimeout;
+let awaitingPlayerAction = true;
 
-// Render the arena and inventory
+// 🎮 RENDER THE ARENA
 export function renderArena(container, monConfig) {
   currentMonster = { ...monConfig, currentHealth: monConfig.power * 5 };
   buffPower = 0;
-  awaitingPlayer = true;
-  awaitingEvade = false;
+  awaitingPlayerAction = true;
 
   container.classList.remove("location-view");
   container.style.backgroundImage = "";
   container.innerHTML = `
     <h2>Battle: ${monConfig.name}</h2>
+
     <div id="battleInfo">
       <p><strong>Hero:</strong> <span id="playerHp">${player.health}</span> / ${
     defaultPlayerConfig.health
@@ -55,142 +50,167 @@ export function renderArena(container, monConfig) {
     </div>
 
     <div id="battle-actions">
-      <button id="attackBtn">Attack (A)</button>
+      <button id="attackBtn">Attack</button>
+      <button id="blockBtn">Block</button>
+      <button id="usePotionBtn">Use Potion</button>
     </div>
-    <div id="evadeContainer"></div>
+
     <div id="battleLog"></div>
     <button id="exitBtn">Flee to Town</button>
   `;
 
-  document.getElementById("attackBtn").addEventListener("click", tryAttack);
+  // 🎯 Set up action buttons
+  document.getElementById("attackBtn").addEventListener("click", playerAttack);
+  document.getElementById("blockBtn").addEventListener("click", playerBlock);
+  document
+    .getElementById("usePotionBtn")
+    .addEventListener("click", playerUsePotion);
   document
     .getElementById("exitBtn")
     .addEventListener("click", () => window.location.reload());
-  document.addEventListener("keydown", handleKey);
 
   renderInventory();
   updateHPDisplays();
-  appendLog(
-    "Battle begins! Equip tools, then Attack with A; block with S if shield equipped."
-  );
+  appendLog(`Battle begins! It's your turn.`);
 }
 
-// Key press handling
-function handleKey(e) {
-  if (awaitingPlayer && !awaitingEvade && (e.key === "a" || e.key === "A")) {
-    e.preventDefault();
-    tryAttack();
-  }
-  if (awaitingEvade && (e.key === "s" || e.key === "S")) {
-    resolveEvade(true);
-  }
+// 📜 LOG HELPERS
+function appendLog(text) {
+  document.getElementById("battleLog").innerHTML += `<p>${text}</p>`;
+}
+function clearLog() {
+  document.getElementById("battleLog").innerHTML = "";
 }
 
-// Attempt to attack
-function tryAttack() {
-  if (!awaitingPlayer) return;
-  awaitingPlayer = false;
-  document.getElementById("attackBtn").disabled = true;
-  round();
-}
-
-// One round: hero → monster → reset
-async function round() {
-  // Hero attack
-  const toolId = player.equippedCombatToolId;
-  const power = toolId ? getToolById(toolId).power : 5;
-  const dmg = Math.floor(Math.random() * power) + 1 + buffPower;
-  buffPower = 0;
-  appendLog(`You deal ${dmg} damage.`);
-  currentMonster.currentHealth = Math.max(
-    0,
-    currentMonster.currentHealth - dmg
-  );
-  updateHPDisplays();
-  if (currentMonster.currentHealth <= 0) {
-    appendLog(`You’ve slain the ${currentMonster.name}!`);
-    return handleVictory(currentMonster);
-  }
-
-  // Monster turn
-  await new Promise((r) => setTimeout(r, 300));
-  await monsterTurn();
-
-  // Reset
-  document.getElementById("attackBtn").disabled = false;
-  awaitingPlayer = true;
-}
-
-// Monster’s attack prompt
-function monsterTurn() {
-  return new Promise((resolve) => {
-    currentMove =
-      currentMonster.attacks[
-        Math.floor(Math.random() * currentMonster.attacks.length)
-      ];
-    awaitingEvade = true;
-    let t = 7;
-    const container = document.getElementById("evadeContainer");
-    container.innerHTML = `
-      <p>${currentMonster.name} uses ${currentMove.name}!</p>
-      <p>Press <strong>S</strong> to block</p>
-      <p>Time left: <span id="evadeTimer">${t}</span>s</p>
-    `;
-
-    countdownInterval = setInterval(() => {
-      if (--t <= 0) clearInterval(countdownInterval);
-      document.getElementById("evadeTimer").textContent = t;
-    }, 1000);
-
-    evadeTimeout = setTimeout(() => resolveEvade(false, resolve), 7000);
-    resolveEvade.callback = resolve;
-  });
-}
-
-// Resolve block or take damage
-function resolveEvade(didBlock, res) {
-  clearInterval(countdownInterval);
-  clearTimeout(evadeTimeout);
-  awaitingEvade = false;
-  document.getElementById("evadeContainer").innerHTML = "";
-
-  let dmg =
-    Math.floor(currentMonster.power * 0.7) +
-    Math.floor(Math.random() * currentMonster.agility);
-
-  const shieldId = player.equippedShieldId;
-  if (didBlock && shieldId) {
-    const def = getToolById(shieldId).effect.defense;
-    const blocked = Math.min(def, dmg);
-    dmg -= blocked;
-    appendLog(`Blocked ${blocked} damage with shield.`);
-  } else {
-    appendLog(`Took ${dmg} damage.`);
-  }
-
-  player.health = Math.max(0, player.health - dmg);
-  updatePlayer({ health: player.health });
-  updateHPDisplays();
-  if (player.health <= 0) {
-    appendLog("You have been slain...");
-    return handleDefeat();
-  }
-  (res || resolveEvade.callback)();
-}
-
-// Update HP UI
+// 🩸 UPDATE HP ON SCREEN
 function updateHPDisplays() {
   document.getElementById("playerHp").textContent = player.health;
   document.getElementById("monsterHp").textContent =
     currentMonster.currentHealth;
 }
 
-// Single-line log
-function appendLog(text) {
-  document.getElementById("battleLog").innerHTML = `<p>${text}</p>`;
+// 🗡 PLAYER ACTIONS
+function playerAttack() {
+  if (!awaitingPlayerAction) return;
+  awaitingPlayerAction = false;
+
+  const toolId = player.equippedCombatToolId;
+  const power = toolId ? getToolById(toolId).power : 5;
+  const dmg = Math.floor(Math.random() * power) + 1 + buffPower;
+  buffPower = 0;
+
+  appendLog(`🗡 You attack and deal ${dmg} damage!`);
+  currentMonster.currentHealth = Math.max(
+    0,
+    currentMonster.currentHealth - dmg
+  );
+  updateHPDisplays();
+
+  if (currentMonster.currentHealth <= 0) {
+    appendLog(`🎉 You’ve slain the ${currentMonster.name}!`);
+    return handleVictory(currentMonster);
+  }
+
+  // ✅ Monster retaliates after player attack
+  setTimeout(monsterTurn, 500);
 }
 
-// Render inventory lists and equip/unequip/use logic
+function playerBlock() {
+  if (!awaitingPlayerAction) return;
+  awaitingPlayerAction = false;
+
+  appendLog(`🛡 You prepare to block.`);
+  // ✅ Blocking simply sets a flag for monsterTurn
+  player.isBlocking = true;
+
+  setTimeout(monsterTurn, 500);
+}
+
+function playerUsePotion() {
+  if (!awaitingPlayerAction) return;
+
+  const potion = player.tools.find((id) => {
+    const tool = getToolById(id);
+    return tool && tool.consumable && tool.type === "potion";
+  });
+
+  if (!potion) {
+    appendLog(`❌ No potions available!`);
+    return;
+  }
+
+  const tool = getToolById(potion);
+
+  // Apply potion effects
+  if (tool.effect.heal) {
+    player.health = Math.min(
+      defaultPlayerConfig.health,
+      player.health + tool.effect.heal
+    );
+    appendLog(`🧪 Used ${tool.name}, healed ${tool.effect.heal} HP!`);
+  }
+  if (tool.effect.power) buffPower += tool.effect.power;
+
+  // Remove potion from inventory
+  player.tools.splice(player.tools.indexOf(potion), 1);
+  updatePlayer({ health: player.health, tools: player.tools });
+
+  updateHPDisplays();
+  renderInventory();
+
+  awaitingPlayerAction = false;
+  setTimeout(monsterTurn, 500);
+}
+
+// 🐉 MONSTER TURN
+function monsterTurn() {
+  const move =
+    currentMonster.attacks[
+      Math.floor(Math.random() * currentMonster.attacks.length)
+    ];
+  appendLog(`🔥 ${currentMonster.name} uses ${move.name}!`);
+
+  // Base monster damage
+  let dmg =
+    Math.floor(currentMonster.power * 0.7) +
+    Math.floor(Math.random() * currentMonster.agility);
+
+  // If player blocked and has a shield, reduce damage
+  if (player.isBlocking) {
+    const shieldId = player.equippedShieldId;
+    if (shieldId) {
+      const shield = getToolById(shieldId);
+      const blocked = shield.effect?.defense
+        ? Math.min(shield.effect.defense, dmg)
+        : 0;
+      dmg -= blocked;
+      appendLog(`🛡 Blocked ${blocked} damage with shield!`);
+    } else {
+      appendLog(`⚠️ You tried to block but had no shield equipped!`);
+    }
+    player.isBlocking = false;
+  }
+
+  // Apply damage
+  if (dmg > 0) {
+    appendLog(`💥 You take ${dmg} damage.`);
+    player.health = Math.max(0, player.health - dmg);
+    updatePlayer({ health: player.health });
+    updateHPDisplays();
+  }
+
+  // Check defeat
+  if (player.health <= 0) {
+    appendLog(`💀 You have been slain...`);
+    return handleDefeat();
+  }
+
+  // ✅ Next round: player's turn again
+  appendLog(`➡️ Your turn again.`);
+  awaitingPlayerAction = true;
+}
+
+// 📦 RENDER INVENTORY
 function renderInventory() {
   const cList = document.getElementById("combat-list");
   const sList = document.getElementById("shield-list");
@@ -203,8 +223,8 @@ function renderInventory() {
     li.textContent = tool.name + " ";
     const btn = document.createElement("button");
 
-    if (tool.effect) {
-      // Potion
+    if (tool.consumable && tool.type === "potion") {
+      // Potions
       btn.textContent = "Use";
       btn.onclick = () => {
         if (tool.effect.heal) {
@@ -212,28 +232,23 @@ function renderInventory() {
             defaultPlayerConfig.health,
             player.health + tool.effect.heal
           );
-          appendLog(`Used ${tool.name}, +${tool.effect.heal} HP.`);
+          appendLog(`🧪 Used ${tool.name}, +${tool.effect.heal} HP.`);
         }
         if (tool.effect.power) buffPower += tool.effect.power;
-        if (tool.effect.agility) player.agility += tool.effect.agility;
         player.tools.splice(player.tools.indexOf(id), 1);
-        updatePlayer({
-          health: player.health,
-          tools: player.tools,
-          agility: player.agility,
-        });
+        updatePlayer({ health: player.health, tools: player.tools });
         updateHPDisplays();
         renderInventory();
       };
       pList.appendChild(li).appendChild(btn);
     } else if (tool.effect?.defense) {
-      // Shield
+      // Shields
       if (player.equippedShieldId === id) {
         btn.textContent = "Unequip";
         btn.onclick = () => {
           player.equippedShieldId = null;
           updatePlayer({ equippedShieldId: null });
-          appendLog("Shield unequipped.");
+          appendLog(`Shield unequipped.`);
           renderInventory();
         };
       } else {
@@ -241,19 +256,19 @@ function renderInventory() {
         btn.onclick = () => {
           player.equippedShieldId = id;
           updatePlayer({ equippedShieldId: id });
-          appendLog(`Equipped shield ${tool.name}.`);
+          appendLog(`Equipped shield: ${tool.name}.`);
           renderInventory();
         };
       }
       sList.appendChild(li).appendChild(btn);
     } else {
-      // Combat tool
+      // Weapons
       if (player.equippedCombatToolId === id) {
         btn.textContent = "Unequip";
         btn.onclick = () => {
           player.equippedCombatToolId = null;
           updatePlayer({ equippedCombatToolId: null });
-          appendLog("Weapon unequipped.");
+          appendLog(`Weapon unequipped.`);
           renderInventory();
         };
       } else {
@@ -261,7 +276,7 @@ function renderInventory() {
         btn.onclick = () => {
           player.equippedCombatToolId = id;
           updatePlayer({ equippedCombatToolId: id });
-          appendLog(`Equipped weapon ${tool.name}.`);
+          appendLog(`Equipped weapon: ${tool.name}.`);
           renderInventory();
         };
       }

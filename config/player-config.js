@@ -13,3 +13,10 @@ export const defaultPlayerConfig = {
   level: 10000000000,
   tools: [], // array of tool IDs
 };
+
+export const coins = defaultPlayerConfig.coins;
+export const health = defaultPlayerConfig.health;
+export const xp = defaultPlayerConfig.xp;
+export const agility = defaultPlayerConfig.agility;
+export const level = defaultPlayerConfig.level;
+export const tools = defaultPlayerConfig.tools;
