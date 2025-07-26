@@ -5,27 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dragon RPG — Arena</title>
     <link rel="stylesheet" href="arena.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div id="content">
-      <!-- arena.js will populate this -->
+    <div id="battle-ui">
+      <!-- Turn Indicator -->
+      <div id="turn-indicator">PLAYER TURN</div>
+
+      <!-- Left Action Menu -->
+      <div id="action-menu">
+        <button class="menu-item" data-action="attack">Attack</button>
+        <button class="menu-item" data-action="skills">Skills</button>
+        <button class="menu-item" data-action="items">Items</button>
+        <button class="menu-item" data-action="guard">Guard</button>
+        <button class="menu-item" data-action="talk">Talk</button>
+        <button class="menu-item" data-action="escape">Escape</button>
+        <button class="menu-item" data-action="pass">Pass</button>
+      </div>
+
+      <!-- Player Status Panel -->
+      <div id="player-status">
+        <img id="player-portrait" src="assets/hero.png" alt="Player Portrait" />
+        <div class="status-info">
+          <p class="name">Hero</p>
+          <p>HP: <span id="playerHp">100</span> / 100</p>
+          <p>MP: <span id="playerMp">30</span> / 30</p>
+          <p>Lv. <span id="playerLevel">1</span></p>
+        </div>
+      </div>
+
+      <!-- Monster Status -->
+      <div id="monster-status">
+        <p><strong>Monster Name</strong></p>
+        <p>HP: <span id="monsterHp">50</span> / 50</p>
+      </div>
+
+      <!-- Battle Log -->
+      <div id="battle-log"></div>
     </div>
 
     <!-- Core scripts -->
-    <script src="player-info.js"></script>
-    <script src="tools.js"></script>
-    <script src="config/tools-config.js"></script>
-    <script src="config/monsters-config.js"></script>
-    <script src="battle.js"></script>
-    <script src="arena.js"></script>
+    <script type="module" src="config/tools-config.js"></script>
+    <script type="module" src="config/monsters-config.js"></script>
+    <script type="module" src="tools.js"></script>
+    <script type="module" src="player-info.js"></script>
+    <script type="module" src="battle.js"></script>
+    <script type="module" src="arena.js"></script>
 
     <!-- Initialize the arena -->
-    <script>
+    <script type="module">
+      import { monstersConfig } from "./config/monsters-config.js";
+      import { renderArena } from "./arena.js";
+
       document.addEventListener("DOMContentLoaded", () => {
-        // Pick the first monster for demo
-        const monster = window.monstersConfig[0];
-        const container = document.getElementById("content");
-        window.renderArena(container, monster);
+        // Grab the first monster for demo
+        const monster = monstersConfig[0];
+        renderArena(document.body, monster);
       });
     </script>
   </body>

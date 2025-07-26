@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Map - The Dragon’s Shadow</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/map.css" />
+  </head>
+  <body>
+    <header>World Map</header>
+    <main>
+      <section id="map-content">
+        <!-- Map will render here -->
+      </section>
+    </main>
+
+    <!-- Core Scripts -->
+    <script type="module" src="config/map-config.js"></script>
+    <script type="module" src="monsters.js"></script>
+    <script type="module" src="arena.js"></script>
+    <script type="module" src="store.js"></script>
+    <script type="module" src="map.js"></script>
+
+    <script type="module">
+      import { getAllLocations, handleLocationAction } from "./map.js";
+      import { renderArena } from "./arena.js";
+
+      const container = document.getElementById("map-content");
+
+      // Helper: build image path for location backgrounds
+      function getLocationImagePath(id) {
+        return `assets/locations/${id}.png`;
+      }
+
+      // Render the main map menu
+      function renderMapUI() {
+        // Reset any location-specific background
+        container.style.backgroundImage = "";
+        container.style.backgroundSize = "";
+        container.style.backgroundPosition = "";
+
+        container.innerHTML = `
+          
+          <ul class="location-list"></ul>
+        `;
+
+        const list = container.querySelector(".location-list");
+        const locations = getAllLocations();
+
+        locations.forEach((loc) => {
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.textContent = loc.name;
+
+          // When clicked → render location screen
+          btn.addEventListener("click", () => {
+            if (loc.id === "town_square") {
+              // ✅ Redirect to the main page if they click Town Square
+              window.location.href = "index.html";
+            } else {
+              renderLocationUI(loc.id);
+            }
+          });
+
+          li.appendChild(btn);
+          list.appendChild(li);
+        });
+      }
+
+      // Render the clicked location’s UI
+      function renderLocationUI(locationId) {
+        const result = handleLocationAction(container, locationId);
+
+        // Set location background dynamically
+        container.style.backgroundImage = `url("${getLocationImagePath(
+          locationId
+        )}")`;
+        container.style.backgroundSize = "cover";
+        container.style.backgroundPosition = "center";
+
+        // Clear content (background stays)
+        container.innerHTML = "";
+
+        if (result.type === "store") {
+          // Instead of rendering the store UI in this same page,
+          // redirect to the standalone store page
+          window.location.href = "store.html";
+          return;
+        }
+
+        // Otherwise show monsters for the location
+        const h2 = document.createElement("h2");
+        h2.textContent = result.location.name;
+        container.appendChild(h2);
+
+        const p = document.createElement("p");
+        p.textContent = result.location.description;
+        container.appendChild(p);
+
+        const ul = document.createElement("ul");
+        ul.className = "monster-list";
+        container.appendChild(ul);
+
+        // Loop through monsters and build UI for each
+        result.monsters.forEach((mon) => {
+          const li = document.createElement("li");
+
+          const img = document.createElement("img");
+          img.src = `assets/monsters/${mon.id}.png`;
+          img.alt = mon.name;
+          img.classList.add("monster-img");
+
+          const info = document.createElement("div");
+          info.innerHTML = `<strong>${mon.name}</strong><br/>Power: ${mon.power}, Agility: ${mon.agility}`;
+
+          const fight = document.createElement("button");
+          fight.textContent = `Fight ${mon.name}`;
+          fight.addEventListener("click", () => {
+            // Save monster info so arena.html knows who to fight
+            localStorage.setItem("currentMonster", JSON.stringify(mon));
+            // Redirect to arena.html
+            window.location.href = "arena.html";
+          });
+
+          li.append(img, info, fight);
+          ul.appendChild(li);
+        });
+
+        // Add Back to Map button
+        const back = document.createElement("button");
+        back.textContent = "Back to Map";
+        back.addEventListener("click", renderMapUI);
+        container.appendChild(back);
+      }
+
+      // Initialize the map UI when the page loads
+      document.addEventListener("DOMContentLoaded", renderMapUI);
+    </script>
+  </body>
+</html>

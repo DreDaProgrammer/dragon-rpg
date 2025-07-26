@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Store - The Dragon’s Shadow</title>
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Store-specific styles -->
+    <link rel="stylesheet" href="store.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Adventurer’s Store</h1>
+    </header>
+
+    <main>
+      <section id="store-content">
+        <!-- JS will inject store interface here -->
+      </section>
+      <div class="navigation-buttons">
+        <button onclick="window.location.href='map.html'">⬅ Back to Map</button>
+      </div>
+    </main>
+
+    <!-- Core Scripts -->
+    <script type="module" src="config/player-config.js"></script>
+    <script type="module" src="player-info.js"></script>
+    <script type="module" src="config/tools-config.js"></script>
+    <script type="module" src="tools.js"></script>
+    <script type="module" src="store.js"></script>
+
+    <script type="module">
+      import { renderStore } from "./store.js";
+      const container = document.getElementById("store-content");
+      document.addEventListener("DOMContentLoaded", () => {
+        renderStore(container);
+      });
+    </script>
+  </body>
+</html>

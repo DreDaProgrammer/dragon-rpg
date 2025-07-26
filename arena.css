@@ -1,174 +1,141 @@
-/* arena.css */
-/* Reset & base */
-* {
+/* ───────────── GLOBAL RESET ───────────── */
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: "Cinzel", serif;
-  background: radial-gradient(circle at top left, #3a2e25, #1e1c17);
-  color: #f8f0e3;
-  text-align: center;
-  padding: 2rem;
-}
-#content {
-  max-width: 900px;
-  margin: 0 auto;
+  font-family: "Orbitron", "Trebuchet MS", sans-serif;
+  background: #000 url("assets/backgrounds/arena-bg.jpg") center/cover no-repeat;
+  color: white;
+  overflow: hidden;
 }
 
-/* Battle Info */
-#battleInfo {
-  margin-bottom: 1rem;
-}
-#battleInfo p {
-  font-size: 1.1rem;
-  margin: 0.3rem 0;
+/* Container for all battle UI */
+#battle-ui {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Tool Picker */
-#pick-tools {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  align-items: flex-end;
-  margin-bottom: 1rem;
+/* ───────────── TURN INDICATOR ───────────── */
+#turn-indicator {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  color: #00ccff;
+  text-shadow: 0 0 8px #00ccff;
+  font-weight: bold;
 }
-#pick-tools label {
+
+/* ───────────── ACTION MENU ───────────── */
+#action-menu {
+  position: absolute;
+  top: 100px;
+  left: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 10px;
+}
+
+#action-menu .menu-item {
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  text-align: left;
+  border-radius: 6px;
+  transition: 0.2s ease;
+  width: 160px;
+}
+
+#action-menu .menu-item:hover,
+#action-menu .menu-item.active {
+  background: rgba(0, 204, 255, 0.3);
+  border-color: #00ccff;
+  text-shadow: 0 0 8px #00ccff;
+  cursor: pointer;
+}
+
+/* ───────────── PLAYER STATUS PANEL ───────────── */
+#player-status {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 220px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+#player-portrait {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 6px rgba(0, 204, 255, 0.5);
+}
+
+.status-info .name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.status-info p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+/* ───────────── MONSTER STATUS ───────────── */
+#monster-status {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid #444;
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 0.95rem;
 }
-#pick-tools select {
-  margin-top: 0.3rem;
-  padding: 0.3rem;
-  border-radius: 4px;
-  border: 1px solid #5a3;
-  background: rgba(30, 30, 30, 0.7);
-  color: #f8f0e3;
-}
-#pick-tools button {
-  background: linear-gradient(to bottom, #337, #224);
-  border: 1px solid #113;
-  color: #f8f0e3;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-family: "Cinzel", serif;
-  cursor: pointer;
-}
-#pick-tools button:disabled {
-  opacity: 0.5;
-  filter: grayscale(100%);
-  cursor: not-allowed;
-}
-#pick-tools button:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #448, #335);
-}
 
-/* Inventory Sections */
-#inventory {
-  margin-bottom: 1rem;
-}
-#inventory h3 {
-  margin-bottom: 0.5rem;
-  color: #d4af37;
-}
-#inventory-sections {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-#inventory-sections > div {
-  flex: 1;
-  background: rgba(30, 30, 30, 0.7);
-  border: 1px solid #5a3;
+/* ───────────── BATTLE LOG ───────────── */
+#battle-log {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-height: 160px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
   border-radius: 6px;
-  padding: 0.8rem;
-}
-#inventory-sections strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #d4af37;
-}
-#inventory-sections ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-}
-#inventory-sections li {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.3rem 0;
-}
-#inventory-sections button {
-  background: linear-gradient(to bottom, #337, #224);
-  border: 1px solid #113;
-  color: #f8f0e3;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-#inventory-sections button:hover {
-  background: linear-gradient(to bottom, #448, #335);
-}
-
-/* Battle Actions */
-#battle-actions {
-  margin-bottom: 1rem;
-}
-#battle-actions button {
-  background: linear-gradient(to bottom, #b33, #800);
-  border: 1px solid #500;
-  color: #f8f0e3;
-  padding: 0.8rem 1.2rem;
-  border-radius: 6px;
-  font-family: "Cinzel", serif;
-  cursor: pointer;
-}
-#battle-actions button:disabled {
-  opacity: 0.5;
-  filter: grayscale(100%);
-  cursor: not-allowed;
-}
-#battle-actions button:hover:not(:disabled) {
-  background: linear-gradient(to bottom, #c44, #900);
-}
-
-/* Evade Prompt */
-#evadeContainer {
-  margin: 1rem 0;
   font-size: 1rem;
-  text-shadow: 1px 1px 2px #000;
-}
-#evadeContainer p {
-  margin: 0.3rem 0;
+  line-height: 1.4;
+  border: 1px solid #333;
 }
 
-/* Battle Log */
-#battleLog {
-  background: rgba(30, 30, 30, 0.7);
-  border: 1px solid #5a3;
-  border-radius: 6px;
-  padding: 0.8rem;
-  margin-bottom: 1rem;
-  min-height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Scrollbar styling for log */
+#battle-log::-webkit-scrollbar {
+  width: 6px;
+}
+#battle-log::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
-/* Exit Button */
-#exitBtn {
-  background: linear-gradient(to bottom, #337, #224);
-  border: 1px solid #113;
-  color: #f8f0e3;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  font-family: "Cinzel", serif;
-  cursor: pointer;
+/* ───────────── GENERAL BUTTON LOOK ───────────── */
+button {
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 1px;
 }
-#exitBtn:hover {
-  background: linear-gradient(to bottom, #448, #335);
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 6px #00ccff;
 }

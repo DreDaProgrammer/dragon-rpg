@@ -1,97 +1,112 @@
 // arena.js
-// Fully turn-based combat: Player chooses an action, then monster acts.
-// Inventory for combat tools, shields, and potions remains usable between turns.
+// Shin Megami Tensei–inspired turn-based combat system
 
 import { player, updatePlayer } from "./player-info.js";
 import { defaultPlayerConfig } from "./config/player-config.js";
 import { getToolById } from "./tools.js";
+import { monstersConfig } from "./config/monsters-config.js";
 import { handleVictory, handleDefeat } from "./battle.js";
 
 let currentMonster;
 let buffPower = 0;
 let awaitingPlayerAction = true;
 
-// 🎮 RENDER THE ARENA
 export function renderArena(container, monConfig) {
+  // Setup monster for battle
   currentMonster = { ...monConfig, currentHealth: monConfig.power * 5 };
   buffPower = 0;
   awaitingPlayerAction = true;
 
-  container.classList.remove("location-view");
-  container.style.backgroundImage = "";
+  // Build SMT-style battle UI
   container.innerHTML = `
-    <h2>Battle: ${monConfig.name}</h2>
+    <div id="battle-ui">
+      <!-- Turn Indicator -->
+      <div id="turn-indicator">PLAYER TURN</div>
 
-    <div id="battleInfo">
-      <p><strong>Hero:</strong> <span id="playerHp">${player.health}</span> / ${
+      <!-- Left Action Menu -->
+      <div id="action-menu">
+        <button class="menu-item" data-action="attack">Attack</button>
+        <button class="menu-item" data-action="skills">Skills</button>
+        <button class="menu-item" data-action="items">Items</button>
+        <button class="menu-item" data-action="guard">Guard</button>
+        <button class="menu-item" data-action="talk">Talk</button>
+        <button class="menu-item" data-action="escape">Escape</button>
+        <button class="menu-item" data-action="pass">Pass</button>
+      </div>
+
+      <!-- Player Status Panel -->
+      <div id="player-status">
+        <img id="player-portrait" src="assets/hero.png" alt="Player Portrait">
+        <div class="status-info">
+          <p class="name">Hero</p>
+          <p>HP: <span id="playerHp">${player.health}</span> / ${
     defaultPlayerConfig.health
   }</p>
-      <p><strong>${monConfig.name}:</strong> <span id="monsterHp">${
-    currentMonster.currentHealth
-  }</span> / ${monConfig.power * 5}</p>
-    </div>
-
-    <div id="inventory">
-      <h3>Inventory</h3>
-      <div id="inventory-sections">
-        <div>
-          <strong>Combat Tools</strong>
-          <ul id="combat-list"></ul>
-        </div>
-        <div>
-          <strong>Shields</strong>
-          <ul id="shield-list"></ul>
-        </div>
-        <div>
-          <strong>Potions</strong>
-          <ul id="potion-list"></ul>
+          <p>MP: <span id="playerMp">${player.mp || 30}</span> / 30</p>
+          <p>Lv. <span id="playerLevel">${player.level || 1}</span></p>
         </div>
       </div>
-    </div>
 
-    <div id="battle-actions">
-      <button id="attackBtn">Attack</button>
-      <button id="blockBtn">Block</button>
-      <button id="usePotionBtn">Use Potion</button>
-    </div>
+      <!-- Monster Status -->
+      <div id="monster-status">
+        <p><strong>${monConfig.name}</strong></p>
+        <p>HP: <span id="monsterHp">${currentMonster.currentHealth}</span> / ${
+    monConfig.power * 5
+  }</p>
+      </div>
 
-    <div id="battleLog"></div>
-    <button id="exitBtn">Flee to Town</button>
+      <!-- Battle Log -->
+      <div id="battle-log"></div>
+    </div>
   `;
 
-  // 🎯 Set up action buttons
-  document.getElementById("attackBtn").addEventListener("click", playerAttack);
-  document.getElementById("blockBtn").addEventListener("click", playerBlock);
-  document
-    .getElementById("usePotionBtn")
-    .addEventListener("click", playerUsePotion);
-  document
-    .getElementById("exitBtn")
-    .addEventListener("click", () => window.location.reload());
+  // Hook menu buttons
+  document.querySelectorAll("#action-menu .menu-item").forEach((btn) => {
+    btn.addEventListener("click", () => handleMenuAction(btn.dataset.action));
+  });
 
-  renderInventory();
-  updateHPDisplays();
-  appendLog(`Battle begins! It's your turn.`);
+  appendLog(`Battle begins against ${monConfig.name}!`);
 }
 
-// 📜 LOG HELPERS
-function appendLog(text) {
-  document.getElementById("battleLog").innerHTML += `<p>${text}</p>`;
-}
-function clearLog() {
-  document.getElementById("battleLog").innerHTML = "";
-}
-
-// 🩸 UPDATE HP ON SCREEN
-function updateHPDisplays() {
-  document.getElementById("playerHp").textContent = player.health;
-  document.getElementById("monsterHp").textContent =
-    currentMonster.currentHealth;
-}
-
-// 🗡 PLAYER ACTIONS
-function playerAttack() {
+/**
+ * Handles the selected menu action (Attack, Skills, Items, etc.)
+ */
+function handleMenuAction(action) {
   if (!awaitingPlayerAction) return;
+
+  switch (action) {
+    case "attack":
+      playerAttack();
+      break;
+    case "skills":
+      appendLog("You don't know any special skills yet.");
+      break;
+    case "items":
+      playerUseItem();
+      break;
+    case "guard":
+      playerGuard();
+      break;
+    case "talk":
+      appendLog(
+        `You attempt to talk to ${currentMonster.name}... but it doesn’t respond.`
+      );
+      endPlayerTurn();
+      break;
+    case "escape":
+      tryEscape();
+      break;
+    case "pass":
+      appendLog("You pass your turn.");
+      endPlayerTurn();
+      break;
+  }
+}
+
+/**
+ * Attack action
+ */
+function playerAttack() {
   awaitingPlayerAction = false;
 
   const toolId = player.equippedCombatToolId;
@@ -111,23 +126,24 @@ function playerAttack() {
     return handleVictory(currentMonster);
   }
 
-  // ✅ Monster retaliates after player attack
-  setTimeout(monsterTurn, 500);
+  endPlayerTurn();
 }
 
-function playerBlock() {
-  if (!awaitingPlayerAction) return;
+/**
+ * Guard action
+ */
+function playerGuard() {
   awaitingPlayerAction = false;
-
-  appendLog(`🛡 You prepare to block.`);
-  // ✅ Blocking simply sets a flag for monsterTurn
-  player.isBlocking = true;
-
-  setTimeout(monsterTurn, 500);
+  appendLog("🛡 You brace for impact, ready to guard.");
+  player.isGuarding = true;
+  endPlayerTurn();
 }
 
-function playerUsePotion() {
-  if (!awaitingPlayerAction) return;
+/**
+ * Item action (use first potion found)
+ */
+function playerUseItem() {
+  awaitingPlayerAction = false;
 
   const potion = player.tools.find((id) => {
     const tool = getToolById(id);
@@ -135,13 +151,12 @@ function playerUsePotion() {
   });
 
   if (!potion) {
-    appendLog(`❌ No potions available!`);
+    appendLog("❌ You have no potions.");
+    awaitingPlayerAction = true;
     return;
   }
 
   const tool = getToolById(potion);
-
-  // Apply potion effects
   if (tool.effect.heal) {
     player.health = Math.min(
       defaultPlayerConfig.health,
@@ -156,13 +171,34 @@ function playerUsePotion() {
   updatePlayer({ health: player.health, tools: player.tools });
 
   updateHPDisplays();
-  renderInventory();
-
-  awaitingPlayerAction = false;
-  setTimeout(monsterTurn, 500);
+  endPlayerTurn();
 }
 
-// 🐉 MONSTER TURN
+/**
+ * Escape action
+ */
+function tryEscape() {
+  awaitingPlayerAction = false;
+  const success = Math.random() > 0.5; // 50% chance to escape
+  if (success) {
+    appendLog("🏃 You successfully fled the battle!");
+    setTimeout(() => window.location.reload(), 1500);
+  } else {
+    appendLog("🚫 You failed to escape!");
+    endPlayerTurn();
+  }
+}
+
+/**
+ * Ends the player's turn → monster takes its turn
+ */
+function endPlayerTurn() {
+  setTimeout(monsterTurn, 800);
+}
+
+/**
+ * Monster's turn logic
+ */
 function monsterTurn() {
   const move =
     currentMonster.attacks[
@@ -170,13 +206,13 @@ function monsterTurn() {
     ];
   appendLog(`🔥 ${currentMonster.name} uses ${move.name}!`);
 
-  // Base monster damage
+  // Calculate monster damage
   let dmg =
     Math.floor(currentMonster.power * 0.7) +
     Math.floor(Math.random() * currentMonster.agility);
 
-  // If player blocked and has a shield, reduce damage
-  if (player.isBlocking) {
+  // Guarding reduces damage if shield is equipped
+  if (player.isGuarding) {
     const shieldId = player.equippedShieldId;
     if (shieldId) {
       const shield = getToolById(shieldId);
@@ -184,103 +220,43 @@ function monsterTurn() {
         ? Math.min(shield.effect.defense, dmg)
         : 0;
       dmg -= blocked;
-      appendLog(`🛡 Blocked ${blocked} damage with shield!`);
+      appendLog(`🛡 Blocked ${blocked} damage with your shield!`);
     } else {
-      appendLog(`⚠️ You tried to block but had no shield equipped!`);
+      appendLog("⚠️ You tried to guard but had no shield equipped!");
     }
-    player.isBlocking = false;
+    player.isGuarding = false;
   }
 
-  // Apply damage
   if (dmg > 0) {
-    appendLog(`💥 You take ${dmg} damage.`);
+    appendLog(`💥 You take ${dmg} damage!`);
     player.health = Math.max(0, player.health - dmg);
     updatePlayer({ health: player.health });
     updateHPDisplays();
   }
 
-  // Check defeat
   if (player.health <= 0) {
     appendLog(`💀 You have been slain...`);
     return handleDefeat();
   }
 
-  // ✅ Next round: player's turn again
-  appendLog(`➡️ Your turn again.`);
+  appendLog("➡️ Your turn.");
   awaitingPlayerAction = true;
 }
 
-// 📦 RENDER INVENTORY
-function renderInventory() {
-  const cList = document.getElementById("combat-list");
-  const sList = document.getElementById("shield-list");
-  const pList = document.getElementById("potion-list");
-  cList.innerHTML = sList.innerHTML = pList.innerHTML = "";
+/**
+ * Updates HP display for both player and monster
+ */
+function updateHPDisplays() {
+  document.getElementById("playerHp").textContent = player.health;
+  document.getElementById("monsterHp").textContent =
+    currentMonster.currentHealth;
+}
 
-  player.tools.forEach((id) => {
-    const tool = getToolById(id);
-    const li = document.createElement("li");
-    li.textContent = tool.name + " ";
-    const btn = document.createElement("button");
-
-    if (tool.consumable && tool.type === "potion") {
-      // Potions
-      btn.textContent = "Use";
-      btn.onclick = () => {
-        if (tool.effect.heal) {
-          player.health = Math.min(
-            defaultPlayerConfig.health,
-            player.health + tool.effect.heal
-          );
-          appendLog(`🧪 Used ${tool.name}, +${tool.effect.heal} HP.`);
-        }
-        if (tool.effect.power) buffPower += tool.effect.power;
-        player.tools.splice(player.tools.indexOf(id), 1);
-        updatePlayer({ health: player.health, tools: player.tools });
-        updateHPDisplays();
-        renderInventory();
-      };
-      pList.appendChild(li).appendChild(btn);
-    } else if (tool.effect?.defense) {
-      // Shields
-      if (player.equippedShieldId === id) {
-        btn.textContent = "Unequip";
-        btn.onclick = () => {
-          player.equippedShieldId = null;
-          updatePlayer({ equippedShieldId: null });
-          appendLog(`Shield unequipped.`);
-          renderInventory();
-        };
-      } else {
-        btn.textContent = "Equip";
-        btn.onclick = () => {
-          player.equippedShieldId = id;
-          updatePlayer({ equippedShieldId: id });
-          appendLog(`Equipped shield: ${tool.name}.`);
-          renderInventory();
-        };
-      }
-      sList.appendChild(li).appendChild(btn);
-    } else {
-      // Weapons
-      if (player.equippedCombatToolId === id) {
-        btn.textContent = "Unequip";
-        btn.onclick = () => {
-          player.equippedCombatToolId = null;
-          updatePlayer({ equippedCombatToolId: null });
-          appendLog(`Weapon unequipped.`);
-          renderInventory();
-        };
-      } else {
-        btn.textContent = "Equip";
-        btn.onclick = () => {
-          player.equippedCombatToolId = id;
-          updatePlayer({ equippedCombatToolId: id });
-          appendLog(`Equipped weapon: ${tool.name}.`);
-          renderInventory();
-        };
-      }
-      cList.appendChild(li).appendChild(btn);
-    }
-  });
+/**
+ * Adds messages to the log box
+ */
+function appendLog(text) {
+  const log = document.getElementById("battle-log");
+  log.innerHTML += `<p>${text}</p>`;
+  log.scrollTop = log.scrollHeight;
 }
