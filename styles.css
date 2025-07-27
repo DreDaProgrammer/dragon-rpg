@@ -18,6 +18,8 @@ html {
 body {
   font-family: "Cinzel", serif;
   background: radial-gradient(circle at top left, #3a2e25, #1e1c17);
+  background: url("assets/locations/town-square.png") center/cover no-repeat;
+
   color: #f8f0e3;
   text-align: center;
 }

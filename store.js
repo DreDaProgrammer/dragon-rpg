@@ -1,16 +1,8 @@
 // store.js
-// Renders the buy/sell interface with horizontal layout, separate tabs for Offense, Defense, Armor, Potions,
-// quantity purchases for consumables, single-copy restriction for combat tools, and a "Sell All" button.
-
 import { getAllTools, getToolById, canAfford } from "./tools.js";
 import { player, updatePlayer, addCoins } from "./player-info.js";
 
-/**
- * Multiply a cost object by quantity
- * @param {{gold:number, silver:number, bronze:number}} cost
- * @param {number} qty
- * @returns {{gold:number, silver:number, bronze:number}}
- */
+/** Multiply a cost object by quantity */
 function multiplyCost(cost, qty) {
   return {
     gold: cost.gold * qty,
@@ -19,246 +11,181 @@ function multiplyCost(cost, qty) {
   };
 }
 
-/**
- * 🔄 Updates the coin display at the top of the store without re-rendering the whole store.
- */
+/** Refreshes 🥇🥈🥉 display */
 function updateCoinDisplay() {
-  const coinDiv = document.querySelector(".store-currency");
-  if (coinDiv) {
-    coinDiv.innerHTML = `Coins: ${player.coins.gold}🥇 ${player.coins.silver}🥈 ${player.coins.bronze}🥉`;
-  }
+  document.getElementById("goldCount").textContent = player.coins.gold;
+  document.getElementById("silverCount").textContent = player.coins.silver;
+  document.getElementById("bronzeCount").textContent = player.coins.bronze;
 }
 
-/**
- * Render the store UI inside a container
- * @param {HTMLElement} container
- */
-export function renderStore(container) {
-  container.innerHTML = `
-    <h2>Store</h2>
-    <div class="store-currency">
-      Coins: ${player.coins.gold}🥇 ${player.coins.silver}🥈 ${player.coins.bronze}🥉
-    </div>
+/** Toggle active class among a group */
+function setActive(selector, activeSel) {
+  document
+    .querySelectorAll(selector)
+    .forEach((btn) => btn.classList.remove("active"));
+  document.querySelector(activeSel).classList.add("active");
+}
 
-    <div class="store-tabs">
-      <button id="buyTab">Buy</button>
-      <button id="sellTab">Sell</button>
-    </div>
+/** Removes all children from an element */
+function clear(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
 
-    <!-- Filter tabs for Buy mode -->
-    <div class="filter-tabs" style="margin-top:10px; display:none;">
-      <button data-type="all">All</button>
-      <button data-type="offense">Offense</button>
-      <button data-type="defense">Defense</button>
-      <button data-type="armor">Armor</button>
-      <button data-type="potion">Potions</button>
-    </div>
+/** Renders the Buy or Sell UI and hooks tabs/filters */
+export function renderStore() {
+  updateCoinDisplay();
 
-    <div id="storeContent"></div>
-  `;
+  const buyTab = document.getElementById("buyTab");
+  const sellTab = document.getElementById("sellTab");
+  const filters = document.querySelector(".filters");
+  const buySec = document.getElementById("buy-section");
+  const sellSec = document.getElementById("sell-section");
+  const buyList = document.getElementById("buy-list");
+  const sellList = document.getElementById("sell-list");
+  const sellAll = document.getElementById("sellAllBtn");
+  const filterBtns = document.querySelectorAll(".filters button");
 
-  // Tab switching
-  document.getElementById("buyTab").addEventListener("click", () => {
-    document.querySelector(".filter-tabs").style.display = "block";
-    renderBuy(container, "all");
+  // Tab clicks
+  buyTab.addEventListener("click", () => {
+    setActive(".tabs button", "#buyTab");
+    filters.style.display = "flex";
+    buySec.style.display = "";
+    sellSec.style.display = "none";
+    renderBuy("all");
+  });
+  sellTab.addEventListener("click", () => {
+    setActive(".tabs button", "#sellTab");
+    filters.style.display = "none";
+    buySec.style.display = "none";
+    sellSec.style.display = "";
+    renderSell();
   });
 
-  document.getElementById("sellTab").addEventListener("click", () => {
-    document.querySelector(".filter-tabs").style.display = "none";
-    renderSell(container);
-  });
-
-  // Filter tab switching
-  document.querySelectorAll(".filter-tabs button").forEach((btn) => {
+  // Filter clicks
+  filterBtns.forEach((btn) =>
     btn.addEventListener("click", () => {
-      const type = btn.getAttribute("data-type");
-      renderBuy(container, type);
-    });
-  });
+      const type = btn.dataset.type;
+      setActive(".filters button", `[data-type="${type}"]`);
+      renderBuy(type);
+    })
+  );
 
-  // Show Buy tab by default
-  document.querySelector(".filter-tabs").style.display = "block";
-  renderBuy(container, "all");
-}
-
-/**
- * Render the Buy interface, filtered by type if provided
- * @param {HTMLElement} container
- * @param {string} filterType
- */
-function renderBuy(container, filterType = "all") {
-  const content = container.querySelector("#storeContent");
-  content.innerHTML = `<ul class="store-list"></ul>`;
-  const list = content.querySelector("ul");
-
-  // Filter tools by type
-  const tools = getAllTools().filter((tool) => {
-    return filterType === "all" ? true : tool.type === filterType;
-  });
-
-  tools.forEach((tool) => {
-    const li = document.createElement("li");
-
-    // ✅ Use consumable property from config
-    const isConsumable = tool.consumable;
-
-    // ✅ Treat offense/defense/armor items as “combat tools” (single-purchase only)
-    const isCombatTool =
-      !isConsumable &&
-      (tool.type === "offense" ||
-        tool.type === "defense" ||
-        tool.type === "armor");
-
-    // Ownership check
-    const ownedCount = player.tools.filter((id) => id === tool.id).length;
-    const canBuyCombat = !player.tools.includes(tool.id);
-
-    // Quantity input for consumables only
-    const qtyInputHTML = isConsumable
-      ? `<input type="number" class="qty-input" min="1" value="1">`
-      : "";
-
-    // Initial affordability check (qty = 1)
-    const initialCost = multiplyCost(tool.cost, 1);
-    const affordableInitially = canAfford(initialCost);
-
-    // Disable buy button if you can’t afford or already own a combat tool
-    const disabledAttr =
-      !affordableInitially || (isCombatTool && !canBuyCombat) ? "disabled" : "";
-
-    li.innerHTML = `
-      <strong>${tool.name}</strong>
-      ${tool.power ? `(Power: ${tool.power})` : ""}
-      ${tool.defense ? `(Defense: ${tool.defense})` : ""}
-      <br/>
-      Type: ${tool.type}
-      <br/>
-      Cost: ${tool.cost.gold}🥇 ${tool.cost.silver}🥈 ${tool.cost.bronze}🥉
-      <br/>
-      ${qtyInputHTML}
-      <button ${disabledAttr}>Buy</button>
-    `;
-
-    const btn = li.querySelector("button");
-    const qtyInput = li.querySelector(".qty-input");
-
-    // ✅ Re-check affordability on quantity change (for consumables only)
-    if (isConsumable && qtyInput) {
-      qtyInput.addEventListener("input", () => {
-        let qty = parseInt(qtyInput.value, 10) || 1;
-        qty = Math.max(1, qty);
-        qtyInput.value = qty;
-        const totalCost = multiplyCost(tool.cost, qty);
-        btn.disabled = !canAfford(totalCost);
-      });
-    }
-
-    // ✅ Buy button logic
-    btn.addEventListener("click", () => {
-      // Determine purchase quantity
-      const qty = isConsumable
-        ? Math.max(1, parseInt(qtyInput.value, 10) || 1)
-        : 1;
-
-      // Deduct coins
-      const totalCost = multiplyCost(tool.cost, qty);
-      addCoins({
-        gold: -totalCost.gold,
-        silver: -totalCost.silver,
-        bronze: -totalCost.bronze,
-      });
-
-      // Add tool(s) to inventory
-      for (let i = 0; i < qty; i++) {
-        player.tools.push(tool.id);
-      }
-      updatePlayer({ coins: player.coins, tools: player.tools });
-
-      // ✅ Refresh coin display instantly
-      updateCoinDisplay();
-
-      alert(`Purchased ${qty}× ${tool.name}!`);
-      renderBuy(container, filterType); // refresh Buy list for the same category
-    });
-
-    list.appendChild(li);
-  });
-}
-
-/**
- * Render the Sell interface, including a "Sell All" button
- * @param {HTMLElement} container
- */
-function renderSell(container) {
-  const content = container.querySelector("#storeContent");
-
-  if (!player.tools.length) {
-    content.innerHTML = "<p>No tools to sell.</p>";
-    return;
-  }
-
-  // “Sell All” button + list
-  content.innerHTML = `
-    <button id="sellAllBtn">Sell All</button>
-    <ul class="store-list"></ul>
-  `;
-  const sellAllBtn = content.querySelector("#sellAllBtn");
-  const list = content.querySelector("ul");
-
-  // ✅ Sell All logic
-  sellAllBtn.addEventListener("click", () => {
+  // Sell All
+  sellAll.addEventListener("click", () => {
     const total = player.tools.reduce(
-      (acc, toolId) => {
-        const tool = getToolById(toolId);
-        if (!tool) return acc;
-        acc.gold += Math.floor(tool.cost.gold / 2);
-        acc.silver += Math.floor(tool.cost.silver / 2);
-        acc.bronze += Math.floor(tool.cost.bronze / 2);
+      (acc, id) => {
+        const t = getToolById(id);
+        if (!t) return acc;
+        acc.gold += Math.floor(t.cost.gold / 2);
+        acc.silver += Math.floor(t.cost.silver / 2);
+        acc.bronze += Math.floor(t.cost.bronze / 2);
         return acc;
       },
       { gold: 0, silver: 0, bronze: 0 }
     );
 
     player.tools = [];
-    updatePlayer({ tools: player.tools });
+    updatePlayer({ tools: [] });
     addCoins(total);
-
-    // ✅ Refresh coin display instantly
     updateCoinDisplay();
-
-    alert(
-      `Sold all tools for ${total.gold}🥇 ${total.silver}🥈 ${total.bronze}🥉!`
-    );
-    renderSell(container);
+    renderSell();
   });
 
-  // ✅ Individual sell entries
-  player.tools.forEach((toolId, idx) => {
-    const tool = getToolById(toolId);
+  // Default: show Buy → All
+  setActive(".tabs button", "#buyTab");
+  setActive(".filters button", `[data-type="all"]`);
+  renderBuy("all");
+}
+
+/** Populates the Buy list for a given category */
+function renderBuy(filterType) {
+  const ul = document.getElementById("buy-list");
+  clear(ul);
+  getAllTools()
+    .filter((tool) => filterType === "all" || tool.type === filterType)
+    .forEach((tool) => {
+      const li = document.createElement("li");
+
+      const isCon = !!tool.effect;
+      const isOne =
+        !isCon && ["offense", "defense", "armor"].includes(tool.type);
+      const owned = player.tools.includes(tool.id);
+      const qtyInp = isCon
+        ? `<input type="number" class="qty" min="1" value="1">`
+        : "";
+      const can1 = canAfford(multiplyCost(tool.cost, 1));
+      const dis = !can1 || (isOne && owned) ? "disabled" : "";
+
+      li.innerHTML = `
+        <h3>${tool.name}</h3>
+        ${tool.power ? `<div>Power: ${tool.power}</div>` : ""}
+        ${tool.defense ? `<div>Defense: ${tool.defense}</div>` : ""}
+        <div>Cost: ${tool.cost.gold}🥇 ${tool.cost.silver}🥈 ${
+        tool.cost.bronze
+      }🥉</div>
+        ${qtyInp}
+        <button ${dis}>Buy</button>
+      `;
+
+      const btn = li.querySelector("button");
+      const inp = li.querySelector(".qty");
+
+      if (inp) {
+        inp.addEventListener("input", () => {
+          let v = Math.max(1, parseInt(inp.value) || 1);
+          inp.value = v;
+          btn.disabled = !canAfford(multiplyCost(tool.cost, v));
+        });
+      }
+
+      btn.addEventListener("click", () => {
+        const qty = inp ? Math.max(1, parseInt(inp.value) || 1) : 1;
+        const cost = multiplyCost(tool.cost, qty);
+        addCoins({
+          gold: -cost.gold,
+          silver: -cost.silver,
+          bronze: -cost.bronze,
+        });
+        for (let i = 0; i < qty; i++) player.tools.push(tool.id);
+        updatePlayer({ coins: player.coins, tools: player.tools });
+        updateCoinDisplay();
+        renderBuy(filterType);
+      });
+
+      ul.appendChild(li);
+    });
+}
+
+/** Populates the Sell list */
+function renderSell() {
+  const ul = document.getElementById("sell-list");
+  clear(ul);
+  if (player.tools.length === 0) {
+    const p = document.createElement("p");
+    p.textContent = "No tools to sell.";
+    return ul.parentElement.insertBefore(p, ul);
+  }
+  player.tools.forEach((id, idx) => {
+    const tool = getToolById(id);
     if (!tool) return;
-    const sellPrice = {
+    const price = {
       gold: Math.floor(tool.cost.gold / 2),
       silver: Math.floor(tool.cost.silver / 2),
       bronze: Math.floor(tool.cost.bronze / 2),
     };
     const li = document.createElement("li");
     li.innerHTML = `
-      <strong>${tool.name}</strong> (${tool.type})<br/>
-      Sell for: ${sellPrice.gold}🥇 ${sellPrice.silver}🥈 ${sellPrice.bronze}🥉
+      <h3>${tool.name}</h3>
+      <div>Sell for: ${price.gold}🥇 ${price.silver}🥈 ${price.bronze}🥉</div>
       <button data-idx="${idx}">Sell</button>
     `;
-    const btn = li.querySelector("button");
-    btn.addEventListener("click", () => {
+    li.querySelector("button").addEventListener("click", () => {
       player.tools.splice(idx, 1);
       updatePlayer({ tools: player.tools });
-      addCoins(sellPrice);
-
-      // ✅ Refresh coin display instantly
+      addCoins(price);
       updateCoinDisplay();
-
-      alert(`Sold ${tool.name}!`);
-      renderSell(container);
+      renderSell();
     });
-    list.appendChild(li);
+    ul.appendChild(li);
   });
 }

@@ -2,27 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Store - The Dragon’s Shadow</title>
-
-    <!-- Global Styles -->
-    <link rel="stylesheet" href="styles.css" />
-    <!-- Store-specific styles -->
-    <link rel="stylesheet" href="store.css" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Dragon Store — The Dragon’s Shadow</title>
+    <link rel="stylesheet" href="css/store.css" />
   </head>
   <body>
     <header>
-      <h1>Adventurer’s Store</h1>
+      <h1>Dragon Store</h1>
+      <div class="store-currency">
+        Coins:
+        <span id="goldCount">0</span>🥇 <span id="silverCount">0</span>🥈
+        <span id="bronzeCount">0</span>🥉
+      </div>
     </header>
 
+    <nav class="tabs">
+      <button id="buyTab" class="active">Buy</button>
+      <button id="sellTab">Sell</button>
+    </nav>
+
+    <nav class="filters">
+      <button data-type="all" class="active">All</button>
+      <button data-type="offense">Offense</button>
+      <button data-type="defense">Defense</button>
+      <button data-type="armor">Armor</button>
+      <button data-type="potion">Potions</button>
+    </nav>
+
     <main>
-      <section id="store-content">
-        <!-- JS will inject store interface here -->
+      <!-- Buy section -->
+      <section id="buy-section">
+        <ul id="buy-list" class="store-list"></ul>
       </section>
-      <div class="navigation-buttons">
-        <button onclick="window.location.href='map.html'">⬅ Back to Map</button>
-      </div>
+      <!-- Sell section -->
+      <section id="sell-section" style="display: none">
+        <button id="sellAllBtn">Sell All</button>
+        <ul id="sell-list" class="store-list"></ul>
+      </section>
     </main>
+
+    <div class="navigation-buttons">
+      <button id="backBtn">← Back to Map</button>
+    </div>
 
     <!-- Core Scripts -->
     <script type="module" src="config/player-config.js"></script>
@@ -30,13 +51,12 @@
     <script type="module" src="config/tools-config.js"></script>
     <script type="module" src="tools.js"></script>
     <script type="module" src="store.js"></script>
-
     <script type="module">
       import { renderStore } from "./store.js";
-      const container = document.getElementById("store-content");
-      document.addEventListener("DOMContentLoaded", () => {
-        renderStore(container);
-      });
+      document
+        .getElementById("backBtn")
+        .addEventListener("click", () => (window.location.href = "map.html"));
+      document.addEventListener("DOMContentLoaded", () => renderStore());
     </script>
   </body>
 </html>
