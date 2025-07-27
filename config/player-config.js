@@ -7,10 +7,11 @@ export const defaultPlayerConfig = {
     silver: 1000,
     bronze: 1000,
   },
-  health: 10000000000000000000000,
-  xp: 10000000000000000,
-  agility: 1000000000000000,
-  level: 10000000000,
+  health: 1000,
+  xp: 10,
+  power: 100,
+  agility: 150,
+  level: 10,
   tools: [], // array of tool IDs
 };
 

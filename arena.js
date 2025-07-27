@@ -1,5 +1,5 @@
 // arena.js
-// Shin Megami Tensei–inspired turn-based combat system
+// Handles turn‐based combat UI: wiring up static HTML elements (no innerHTML templates).
 
 import { player, updatePlayer } from "./player-info.js";
 import { defaultPlayerConfig } from "./config/player-config.js";
@@ -8,89 +8,158 @@ import { monstersConfig } from "./config/monsters-config.js";
 import { handleVictory, handleDefeat } from "./battle.js";
 
 let currentMonster;
-let buffPower = 0;
-let awaitingPlayerAction = true;
+let buffPower;
+let awaitingPlayerAction;
 
-export function renderArena(container, monConfig) {
-  // Setup monster for battle
-  currentMonster = { ...monConfig, currentHealth: monConfig.power * 5 };
-  buffPower = 0;
-  awaitingPlayerAction = true;
+// --- Cached DOM elements ---
+const turnIndicator = document.getElementById("turn-indicator");
+const actionButtons = document.querySelectorAll("#action-menu .menu-item");
+const playerHpEl = document.getElementById("playerHp");
+const playerMaxHpEl = document.getElementById("playerMaxHp");
+const playerMpEl = document.getElementById("playerMp");
+const playerMaxMpEl = document.getElementById("playerMaxMp");
+const playerLvEl = document.getElementById("playerLevel");
+const monsterNameEl = document.getElementById("monsterName");
+const monsterHpEl = document.getElementById("monsterHp");
+const monsterMaxHpEl = document.getElementById("monsterMaxHp");
+const logContainer = document.getElementById("battle-log");
+const inventoryPanel = document.getElementById("inventory-panel");
 
-  // Build SMT-style battle UI
-  container.innerHTML = `
-    <div id="battle-ui">
-      <!-- Turn Indicator -->
-      <div id="turn-indicator">PLAYER TURN</div>
+// --- Helpers ---
+function updateStatusPanels() {
+  playerHpEl.textContent = player.health;
+  playerMaxHpEl.textContent = defaultPlayerConfig.health;
+  playerMpEl.textContent = player.mp || 30;
+  playerMaxMpEl.textContent = 30;
+  playerLvEl.textContent = player.level || 1;
 
-      <!-- Left Action Menu -->
-      <div id="action-menu">
-        <button class="menu-item" data-action="attack">Attack</button>
-        <button class="menu-item" data-action="skills">Skills</button>
-        <button class="menu-item" data-action="items">Items</button>
-        <button class="menu-item" data-action="guard">Guard</button>
-        <button class="menu-item" data-action="talk">Talk</button>
-        <button class="menu-item" data-action="escape">Escape</button>
-        <button class="menu-item" data-action="pass">Pass</button>
-      </div>
-
-      <!-- Player Status Panel -->
-      <div id="player-status">
-        <img id="player-portrait" src="assets/hero.png" alt="Player Portrait">
-        <div class="status-info">
-          <p class="name">Hero</p>
-          <p>HP: <span id="playerHp">${player.health}</span> / ${
-    defaultPlayerConfig.health
-  }</p>
-          <p>MP: <span id="playerMp">${player.mp || 30}</span> / 30</p>
-          <p>Lv. <span id="playerLevel">${player.level || 1}</span></p>
-        </div>
-      </div>
-
-      <!-- Monster Status -->
-      <div id="monster-status">
-        <p><strong>${monConfig.name}</strong></p>
-        <p>HP: <span id="monsterHp">${currentMonster.currentHealth}</span> / ${
-    monConfig.power * 5
-  }</p>
-      </div>
-
-      <!-- Battle Log -->
-      <div id="battle-log"></div>
-    </div>
-  `;
-
-  // Hook menu buttons
-  document.querySelectorAll("#action-menu .menu-item").forEach((btn) => {
-    btn.addEventListener("click", () => handleMenuAction(btn.dataset.action));
-  });
-
-  appendLog(`Battle begins against ${monConfig.name}!`);
+  monsterNameEl.textContent = currentMonster.name;
+  monsterHpEl.textContent = currentMonster.currentHealth;
+  monsterMaxHpEl.textContent = currentMonster.maxHealth;
 }
 
-/**
- * Handles the selected menu action (Attack, Skills, Items, etc.)
- */
+function appendLog(text) {
+  const p = document.createElement("p");
+  p.textContent = text;
+  logContainer.appendChild(p);
+  logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function clearLog() {
+  logContainer.innerHTML = "";
+}
+
+// --- Inventory UI ---
+function showInventory() {
+  awaitingPlayerAction = false;
+  inventoryPanel.innerHTML = "";
+  inventoryPanel.style.display = "block";
+
+  const sections = [
+    { title: "Weapons", type: "offense" },
+    { title: "Shields", type: "defense" },
+    { title: "Potions", type: "potion" },
+  ];
+
+  sections.forEach(({ title, type }) => {
+    const sec = document.createElement("div");
+    const h3 = document.createElement("h3");
+    h3.textContent = title;
+    sec.appendChild(h3);
+
+    const ul = document.createElement("ul");
+    player.tools.forEach((id, idx) => {
+      const tool = getToolById(id);
+      if (!tool || tool.type !== type) return;
+
+      const li = document.createElement("li");
+      li.textContent = tool.name + " ";
+      const btn = document.createElement("button");
+
+      if (type === "potion") {
+        btn.textContent = "Use";
+        btn.onclick = () => {
+          if (tool.effect.heal) {
+            player.health = Math.min(
+              defaultPlayerConfig.health,
+              player.health + tool.effect.heal
+            );
+            appendLog(`Used ${tool.name}, +${tool.effect.heal} HP.`);
+          }
+          if (tool.effect.power) buffPower += tool.effect.power;
+          player.tools.splice(idx, 1);
+          updatePlayer({ health: player.health, tools: player.tools });
+          updateStatusPanels();
+          closeInventory();
+          endPlayerTurn();
+        };
+      } else {
+        const equipped =
+          type === "offense"
+            ? player.equippedCombatToolId === id
+            : player.equippedShieldId === id;
+        btn.textContent = equipped ? "Unequip" : "Equip";
+        btn.onclick = () => {
+          if (type === "offense") {
+            player.equippedCombatToolId = equipped ? null : id;
+            appendLog(
+              equipped ? `Unequipped ${tool.name}.` : `Equipped ${tool.name}.`
+            );
+          } else {
+            player.equippedShieldId = equipped ? null : id;
+            appendLog(
+              equipped ? `Unequipped ${tool.name}.` : `Equipped ${tool.name}.`
+            );
+          }
+          updatePlayer({
+            equippedCombatToolId: player.equippedCombatToolId,
+            equippedShieldId: player.equippedShieldId,
+          });
+          updateStatusPanels();
+          closeInventory();
+          endPlayerTurn();
+        };
+      }
+
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    inventoryPanel.appendChild(sec);
+  });
+
+  const cancel = document.createElement("button");
+  cancel.textContent = "Cancel";
+  cancel.onclick = () => {
+    closeInventory();
+    awaitingPlayerAction = true;
+  };
+  inventoryPanel.appendChild(cancel);
+}
+
+function closeInventory() {
+  inventoryPanel.style.display = "none";
+  inventoryPanel.innerHTML = "";
+}
+
+// --- Battle Actions ---
 function handleMenuAction(action) {
   if (!awaitingPlayerAction) return;
-
   switch (action) {
     case "attack":
       playerAttack();
       break;
     case "skills":
-      appendLog("You don't know any special skills yet.");
+      appendLog("No skills available.");
       break;
     case "items":
-      playerUseItem();
+      showInventory();
       break;
     case "guard":
       playerGuard();
       break;
     case "talk":
-      appendLog(
-        `You attempt to talk to ${currentMonster.name}... but it doesn’t respond.`
-      );
+      appendLog(`The ${currentMonster.name} does not respond.`);
       endPlayerTurn();
       break;
     case "escape":
@@ -103,160 +172,111 @@ function handleMenuAction(action) {
   }
 }
 
-/**
- * Attack action
- */
 function playerAttack() {
   awaitingPlayerAction = false;
-
   const toolId = player.equippedCombatToolId;
   const power = toolId ? getToolById(toolId).power : 5;
   const dmg = Math.floor(Math.random() * power) + 1 + buffPower;
   buffPower = 0;
 
-  appendLog(`🗡 You attack and deal ${dmg} damage!`);
   currentMonster.currentHealth = Math.max(
     0,
     currentMonster.currentHealth - dmg
   );
-  updateHPDisplays();
+  appendLog(`You deal ${dmg} damage.`);
+  updateStatusPanels();
 
-  if (currentMonster.currentHealth <= 0) {
-    appendLog(`🎉 You’ve slain the ${currentMonster.name}!`);
+  if (currentMonster.currentHealth === 0) {
     return handleVictory(currentMonster);
   }
-
   endPlayerTurn();
 }
 
-/**
- * Guard action
- */
 function playerGuard() {
   awaitingPlayerAction = false;
-  appendLog("🛡 You brace for impact, ready to guard.");
   player.isGuarding = true;
+  appendLog("You brace for impact.");
   endPlayerTurn();
 }
 
-/**
- * Item action (use first potion found)
- */
-function playerUseItem() {
-  awaitingPlayerAction = false;
-
-  const potion = player.tools.find((id) => {
-    const tool = getToolById(id);
-    return tool && tool.consumable && tool.type === "potion";
-  });
-
-  if (!potion) {
-    appendLog("❌ You have no potions.");
-    awaitingPlayerAction = true;
-    return;
-  }
-
-  const tool = getToolById(potion);
-  if (tool.effect.heal) {
-    player.health = Math.min(
-      defaultPlayerConfig.health,
-      player.health + tool.effect.heal
-    );
-    appendLog(`🧪 Used ${tool.name}, healed ${tool.effect.heal} HP!`);
-  }
-  if (tool.effect.power) buffPower += tool.effect.power;
-
-  // Remove potion from inventory
-  player.tools.splice(player.tools.indexOf(potion), 1);
-  updatePlayer({ health: player.health, tools: player.tools });
-
-  updateHPDisplays();
-  endPlayerTurn();
-}
-
-/**
- * Escape action
- */
 function tryEscape() {
   awaitingPlayerAction = false;
-  const success = Math.random() > 0.5; // 50% chance to escape
-  if (success) {
-    appendLog("🏃 You successfully fled the battle!");
-    setTimeout(() => window.location.reload(), 1500);
+  if (Math.random() > 0.5) {
+    appendLog("You fled the battle!");
+    setTimeout(() => (window.location.href = "index.html"), 800);
   } else {
-    appendLog("🚫 You failed to escape!");
+    appendLog("Escape failed.");
     endPlayerTurn();
   }
 }
 
-/**
- * Ends the player's turn → monster takes its turn
- */
 function endPlayerTurn() {
-  setTimeout(monsterTurn, 800);
+  setTimeout(monsterTurn, 600);
 }
 
-/**
- * Monster's turn logic
- */
 function monsterTurn() {
-  const move =
+  const atk =
     currentMonster.attacks[
       Math.floor(Math.random() * currentMonster.attacks.length)
     ];
-  appendLog(`🔥 ${currentMonster.name} uses ${move.name}!`);
+  appendLog(`${currentMonster.name} uses ${atk.name}!`);
 
-  // Calculate monster damage
   let dmg =
     Math.floor(currentMonster.power * 0.7) +
     Math.floor(Math.random() * currentMonster.agility);
 
-  // Guarding reduces damage if shield is equipped
   if (player.isGuarding) {
-    const shieldId = player.equippedShieldId;
-    if (shieldId) {
-      const shield = getToolById(shieldId);
-      const blocked = shield.effect?.defense
-        ? Math.min(shield.effect.defense, dmg)
-        : 0;
+    const shield = getToolById(player.equippedShieldId);
+    if (shield && shield.effect.defense) {
+      const blocked = Math.min(shield.effect.defense, dmg);
       dmg -= blocked;
-      appendLog(`🛡 Blocked ${blocked} damage with your shield!`);
-    } else {
-      appendLog("⚠️ You tried to guard but had no shield equipped!");
+      appendLog(`Blocked ${blocked} damage with shield.`);
     }
     player.isGuarding = false;
   }
 
-  if (dmg > 0) {
-    appendLog(`💥 You take ${dmg} damage!`);
-    player.health = Math.max(0, player.health - dmg);
-    updatePlayer({ health: player.health });
-    updateHPDisplays();
-  }
+  player.health = Math.max(0, player.health - dmg);
+  updatePlayer({ health: player.health });
+  appendLog(`You take ${dmg} damage.`);
+  updateStatusPanels();
 
-  if (player.health <= 0) {
-    appendLog(`💀 You have been slain...`);
+  if (player.health === 0) {
     return handleDefeat();
   }
-
-  appendLog("➡️ Your turn.");
   awaitingPlayerAction = true;
+  appendLog("Your turn.");
 }
 
-/**
- * Updates HP display for both player and monster
- */
-function updateHPDisplays() {
-  document.getElementById("playerHp").textContent = player.health;
-  document.getElementById("monsterHp").textContent =
-    currentMonster.currentHealth;
+// --- Public API ---
+export function renderArena(container, monConfig) {
+  currentMonster = {
+    ...monConfig,
+    maxHealth: monConfig.power * 5,
+    currentHealth: monConfig.power * 5,
+  };
+  buffPower = 0;
+  awaitingPlayerAction = true;
+  clearLog();
+  inventoryPanel.style.display = "none";
+
+  actionButtons.forEach((btn) => {
+    btn.removeEventListener("click", handleMenuAction);
+    btn.addEventListener("click", () => handleMenuAction(btn.dataset.action));
+  });
+
+  updateStatusPanels();
+  appendLog(`Battle begins against ${monConfig.name}!`);
 }
 
-/**
- * Adds messages to the log box
- */
-function appendLog(text) {
-  const log = document.getElementById("battle-log");
-  log.innerHTML += `<p>${text}</p>`;
-  log.scrollTop = log.scrollHeight;
-}
+// Load the monster you clicked on from localStorage:
+document.addEventListener("DOMContentLoaded", () => {
+  const data = localStorage.getItem("currentMonster");
+  if (data) {
+    const mon = JSON.parse(data);
+    renderArena(document.body, mon);
+  } else {
+    // Fallback if nothing was set:
+    console.warn("No monster in storage—defaulting to first config.");
+    renderArena(document.body, monstersConfig[0]);
+  }
+});
