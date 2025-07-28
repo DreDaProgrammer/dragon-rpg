@@ -1,0 +1,159 @@
+/* css/store.css */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Page background and font */
+body {
+  font-family: "Trebuchet MS", sans-serif;
+  background: url("../assets/locations/store.png") center/cover no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  color: #f1f0e3;
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+}
+header h1 {
+  font-size: 2.5rem;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+
+/* Coin display */
+.store-currency {
+  font-size: 1.2rem;
+  color: #ffd700;
+  letter-spacing: 1px;
+}
+
+/* Tabs (Buy / Sell) */
+.store-tabs,
+.filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+.store-tabs button,
+.filter-tabs button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.store-tabs button.active,
+.filter-tabs button.active {
+  background: #d4af37;
+  color: #222;
+}
+.store-tabs button:hover:not(.active),
+.filter-tabs button:hover:not(.active) {
+  background: #555;
+}
+
+/* Store content area */
+#storeContent {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Item grid */
+.store-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.store-list li {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #5a3;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.store-list li h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.store-list li .details {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+/* Quantity input */
+.store-list li .qty {
+  width: 60px;
+  margin: 8px auto;
+  padding: 4px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #222;
+  color: #fff;
+  text-align: center;
+}
+
+/* Buy / Sell buttons */
+.store-list li button {
+  margin-top: auto;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background: #337;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.store-list li button:hover:not(:disabled) {
+  background: #559;
+}
+.store-list li button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sell All button */
+#sellAllBtn {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 20px;
+  background: #800;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#sellAllBtn:hover {
+  background: #a00;
+}
+
+/* Back to Map */
+.navigation-buttons {
+  text-align: center;
+  margin: 30px 0;
+}
+.navigation-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.navigation-buttons button:hover {
+  background: #555;
+}

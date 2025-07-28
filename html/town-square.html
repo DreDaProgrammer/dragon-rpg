@@ -38,8 +38,6 @@
         defaultPlayerConfig,
       } from "./config/player-config.js";
       import { showStats } from "./player-info.js";
-      import { renderMap } from "./map.js";
-
       // New Game: reset player data
       document.getElementById("newGameBtn").addEventListener("click", () => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPlayerConfig));
@@ -52,9 +50,9 @@
         showStats(document.getElementById("content"));
       });
 
-      // Open Map
+      // Open Map → Navigate to a new page
       document.getElementById("mapBtn").addEventListener("click", () => {
-        renderMap(document.getElementById("content"));
+        window.location.href = "map.html";
       });
     </script>
   </body>

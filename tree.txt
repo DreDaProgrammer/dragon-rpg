@@ -1,0 +1,454 @@
+/Users/dandrewilliams/Documents/GitHub/dragon-rpg
+├── .git
+│   ├── branches
+│   ├── hooks
+│   │   ├── applypatch-msg.sample
+│   │   ├── commit-msg.sample
+│   │   ├── fsmonitor-watchman.sample
+│   │   ├── post-update.sample
+│   │   ├── pre-applypatch.sample
+│   │   ├── pre-commit.sample
+│   │   ├── pre-merge-commit.sample
+│   │   ├── pre-push.sample
+│   │   ├── pre-rebase.sample
+│   │   ├── pre-receive.sample
+│   │   ├── prepare-commit-msg.sample
+│   │   ├── push-to-checkout.sample
+│   │   ├── sendemail-validate.sample
+│   │   └── update.sample
+│   ├── info
+│   │   └── exclude
+│   ├── logs
+│   │   ├── refs
+│   │   │   ├── heads
+│   │   │   │   ├── dev
+│   │   │   │   ├── fight
+│   │   │   │   ├── fix-game
+│   │   │   │   └── main
+│   │   │   └── remotes
+│   │   │       └── origin
+│   │   │           ├── dev
+│   │   │           ├── fight
+│   │   │           ├── fix-game
+│   │   │           ├── HEAD
+│   │   │           └── main
+│   │   └── HEAD
+│   ├── objects
+│   │   ├── 01
+│   │   │   └── 33312818613432e41ef1a6d9f904bdd90dc831
+│   │   ├── 02
+│   │   │   └── 531bfad316b05767ff35e93a11399ea32de567
+│   │   ├── 05
+│   │   │   ├── d7293b3963bf924ec0d4245ae77f9ebe47b4c8
+│   │   │   └── f987b060ac53d8def04be0c8d54bf48171439c
+│   │   ├── 06
+│   │   │   └── 3d06d84d802fe7fca240ae999b0d4f73f1a9f9
+│   │   ├── 07
+│   │   │   └── 4a2ad93d3c3a1b95d5b96766332a52141aa128
+│   │   ├── 0b
+│   │   │   └── 097bc6bc6e4e33279275b089128c58953d8e46
+│   │   ├── 10
+│   │   │   └── 44181a955f8164fbb3ba57a6055f929d92bc5e
+│   │   ├── 11
+│   │   │   ├── 0a3d1758e83a9af77113ff320721f7843edd3e
+│   │   │   └── 8cfbba5e0085b5268fef7fce67299cb332dc07
+│   │   ├── 12
+│   │   │   └── 00307e220513d8e14b189543a5640ae3d73ac7
+│   │   ├── 14
+│   │   │   └── a3dd4529b2043a3f93c0896eba2feff57a31c0
+│   │   ├── 15
+│   │   │   ├── 016f734025da15213634ed4da158d312e34716
+│   │   │   ├── 7a3c41779108007716d99a664c72f861353b93
+│   │   │   └── c6172d17391b93c6368a5986d410674daadced
+│   │   ├── 1c
+│   │   │   └── 7bc9cdd40c27f0760d2ed115f165dc561cc03c
+│   │   ├── 1d
+│   │   │   ├── 03a92980a7e36101a20760dbee8af153ca11e7
+│   │   │   ├── ae0d5ad109ceb7e7e942411e6491f65a6a3c09
+│   │   │   └── e0de37ab300d0382f1d358b82eaec6c26c032b
+│   │   ├── 1e
+│   │   │   ├── 98428f46025ae427a3d803d5016b2f5f62ca62
+│   │   │   └── 9c0b4f391a6a6df59c3db07a4342fd21734099
+│   │   ├── 1f
+│   │   │   └── 948fb850422eefc64a3b6c4557d83a8a3e7965
+│   │   ├── 20
+│   │   │   ├── 70eec77060a0166996228a7d92574ac950a751
+│   │   │   └── a299f79bb4b73c8d7effb78b66498ea70b744a
+│   │   ├── 24
+│   │   │   ├── 25eb9f2f47daabca43d0ee6233594785ae5127
+│   │   │   └── 6c631f2d97bcca6d70108000d70d9102b622ff
+│   │   ├── 25
+│   │   │   └── 1c05189b67004790e7bac363ccd5980ca31add
+│   │   ├── 27
+│   │   │   └── 4c956116937689321a81d3faa2552c0f0a5f01
+│   │   ├── 2d
+│   │   │   └── 80194be743ac966738a3c491edc2af5fcb1695
+│   │   ├── 2f
+│   │   │   └── e60df728a1dff28b235de08d3e3c803d8ce429
+│   │   ├── 31
+│   │   │   └── 09e60c02af88d51815890262260c9433f48af3
+│   │   ├── 32
+│   │   │   └── 8d99972158ac93c7c917bda5143bc8b4155987
+│   │   ├── 33
+│   │   │   └── 1f0466d0df0ce18246a2cb3a784d43549efe8c
+│   │   ├── 34
+│   │   │   ├── 6ca5eca3d8a90ae6f070be7bda1cd18a8fe438
+│   │   │   └── 6daf98f43f32d5f2ce33c9e9f5bd510e5b3dba
+│   │   ├── 36
+│   │   │   ├── 2999f06fde113603b3ae508d7ca795be09e1aa
+│   │   │   ├── 4af1a8f6ed205907a2fafe7b803084d81bf001
+│   │   │   └── a93503b7a5f0dbb95898789537ba9c8389b98a
+│   │   ├── 3a
+│   │   │   └── b196cd770384a343c00b67e7f9f7d8193ccdf2
+│   │   ├── 3d
+│   │   │   └── f1c7f8fd2ee9a9b4209d3b808117e8fcf6a162
+│   │   ├── 3e
+│   │   │   └── 1e22fd601ae36ecd7e71e981829864893c8da7
+│   │   ├── 44
+│   │   │   └── 200dc181a8f520f0a851934215209a292f48c4
+│   │   ├── 47
+│   │   │   └── 136a3e352e730a17a79a9e74494a482bab4c3c
+│   │   ├── 4b
+│   │   │   └── 5979af2edde620941a3357f06afdf16135512a
+│   │   ├── 4e
+│   │   │   └── a6e0cdf7e5eca6d24265b05a5fadc60f541444
+│   │   ├── 50
+│   │   │   ├── daedf142dd8f95f27078bea2dcdbdb97114951
+│   │   │   └── e3eaaffb90491dbffc686dd8f987966c06e978
+│   │   ├── 52
+│   │   │   └── 5aea8aeb9378358a687d8570e3a501c51c4173
+│   │   ├── 54
+│   │   │   └── 0c5261f7141fc0229d2c3c0c9901e7d9175c00
+│   │   ├── 58
+│   │   │   └── 35af72ec53b19e96c6388b75ddc96b637335f4
+│   │   ├── 59
+│   │   │   ├── 0fb86fa87b6ce82681947a172c458e5f7ce349
+│   │   │   ├── 12446e28f04fcc32ec2ee1bee00eb94ec5d035
+│   │   │   └── ea3526a12e90e8684c4d40c77b32f6f0fbc643
+│   │   ├── 5a
+│   │   │   ├── 7a27296c763c00e94113ddc9eeca77163f7c16
+│   │   │   └── be834acfcee44ed985d11c3524211801fa485d
+│   │   ├── 5d
+│   │   │   └── 9ecf217e803aff6c5573d87ef0c8b99ae573f9
+│   │   ├── 5e
+│   │   │   ├── 2a7ac266e3706f56b52a71fde1b7351fbd99e1
+│   │   │   └── 59215cebcbec4bc94d2e3052557f2afb8b4baf
+│   │   ├── 60
+│   │   │   └── af283d4c37c1f154b5e8f6c70d12d5aa796704
+│   │   ├── 62
+│   │   │   └── ac2d4a63ce05d54a724989f507e7e9195f9c39
+│   │   ├── 66
+│   │   │   └── 5e2aadc678ddebe73496e98e2e97eb89fa79f9
+│   │   ├── 6a
+│   │   │   └── b293f231e3b614c91ad97d2c2794bc1a5d7124
+│   │   ├── 6d
+│   │   │   └── f238c768617c73a91ed9c7a278437bb88a69b2
+│   │   ├── 6f
+│   │   │   └── ccdcecef7978492b8ad44f3edadc4b4f07cfd2
+│   │   ├── 70
+│   │   │   ├── 05957136d0f0890dc1be424526e3ba5d2d1e3e
+│   │   │   ├── a0a2a1f7246f3da509beb61b8bc71da47b8251
+│   │   │   ├── aac16729650e9ee6945c53be16d48e76fd8a8a
+│   │   │   └── b0731ee3bfc2f7648d10adae1e483c40f95687
+│   │   ├── 73
+│   │   │   └── f2a8a42141783ef66d9e548d6da9c7423493dc
+│   │   ├── 74
+│   │   │   └── 0bdfcd5b77d4784036ee2368c64b3c5da7009c
+│   │   ├── 76
+│   │   │   └── c6e23ba3467ec31633b826a1381629a25c5fa6
+│   │   ├── 79
+│   │   │   └── c465cf634be0130f0567b894ca6294064a238f
+│   │   ├── 7a
+│   │   │   └── f6352b732b3f9a828ed60608fbf748eee7490b
+│   │   ├── 7c
+│   │   │   ├── 0df810a3e02b382e380c0449f71d05272fabca
+│   │   │   └── 758d5f2a51f855491979f0dfbd0f8059d8b9bc
+│   │   ├── 7e
+│   │   │   ├── 04a0bee9865b42806494b8c8716d65e16cc634
+│   │   │   └── fa8a8e40474aebd2a7868cfbda63644ad8dda4
+│   │   ├── 7f
+│   │   │   └── 90526fdf8e8c368983f5b153808d5701ae2aef
+│   │   ├── 80
+│   │   │   ├── 7455dac403f81cd9e074a2df62b1077ae4add5
+│   │   │   └── ee0c409271184e4f8ddf20ccf00151a3b5786a
+│   │   ├── 81
+│   │   │   └── 0432dc1a3cea7b24bf591ad2632d21fb6bf5f9
+│   │   ├── 82
+│   │   │   └── 539d18176b8a2fa87dd52e1f97cafc5ad00bec
+│   │   ├── 84
+│   │   │   └── 60b11298db55b797435de625c50e9e59a576ff
+│   │   ├── 86
+│   │   │   ├── bd953833290e650470a8a974e14dabb9a90677
+│   │   │   └── ef6d2b6c3eaa74e320348481ab071044c49f36
+│   │   ├── 87
+│   │   │   └── c4c373e51719d8c319a26704df5a2fb1843a72
+│   │   ├── 88
+│   │   │   └── 8e31002cac313d740a0fa1f7135a7709551d97
+│   │   ├── 89
+│   │   │   ├── 4e378b279f3d7c070d67be7b2bfead45f3d73e
+│   │   │   ├── 513e5a2eca4fa752b007a4beb58a54f6f62bca
+│   │   │   └── d11e7412ca9ce50cd5b4dde9ecc0c0ac018815
+│   │   ├── 8d
+│   │   │   ├── 22d5d6b7ee199af5fae3fd33ab0bdb800e46e4
+│   │   │   ├── 23216e259120914288be1e6a146ead1c20d6ce
+│   │   │   └── 849d3c76b8912644a6f54c981304c405b4db56
+│   │   ├── 8e
+│   │   │   └── 27fb7c64110fd0bbf6b4ad18d8c207532aeaaf
+│   │   ├── 93
+│   │   │   └── f258351240b9bc66a9cf797da21275314da9cc
+│   │   ├── 94
+│   │   │   └── 07c818d8faa7a82dbd8be2ed2730012e54b22b
+│   │   ├── 95
+│   │   │   └── 0cf58dbe92bfc8c02595cb4be7a74b2ba0e805
+│   │   ├── 96
+│   │   │   └── 532a7655689641a24ce2aad79002a53fd278c5
+│   │   ├── 97
+│   │   │   └── c994265b115f476ff70e2ad6269ce476f28255
+│   │   ├── 99
+│   │   │   └── 58f9f25cf5e7e362b2f671a2eb42922e7c9a36
+│   │   ├── 9b
+│   │   │   └── 9a84fe2cad994790edbed2afab448a3e714078
+│   │   ├── 9c
+│   │   │   └── 3eedcc9e59a539b2a799cd838e8b9dec00a5b1
+│   │   ├── 9f
+│   │   │   └── cc12b3472babb45822e67ff501623303fb8b45
+│   │   ├── a0
+│   │   │   └── dbc97c9d5fc474934cb55cd26948715bb11dd2
+│   │   ├── a1
+│   │   │   └── 20b734928501b57f207a99bad05c8d840ff81f
+│   │   ├── a2
+│   │   │   ├── 17574e5bb660f0bb68e2270c6aec5c696638ce
+│   │   │   └── 974561ab55405a973d1d55e041a478bd826985
+│   │   ├── a3
+│   │   │   └── 8a1991a7a38280e9eacb9c2b89ec1d30654d1c
+│   │   ├── a4
+│   │   │   ├── 2febdb2baf20be9a13cde6cf2096d10933017d
+│   │   │   └── fdc6183c154c427fcf4ab364e32fc1624f3e66
+│   │   ├── a8
+│   │   │   └── 7fc7a8e8f0c0e6f3030e5f8e5415974d9c08de
+│   │   ├── a9
+│   │   │   ├── 5e419ae2ac5d83d8e55a16ea67682846b8e96a
+│   │   │   └── 762efa4b7cbc52e51caff9b0c04a8164157ea5
+│   │   ├── aa
+│   │   │   └── 014431e94340accd04a83b92868ad3df151d91
+│   │   ├── ad
+│   │   │   └── 957b8421a07ee08daa507d64d6e6aa51bff777
+│   │   ├── ae
+│   │   │   └── 8c58af3505d0b02af0ab91b481afafd0069dca
+│   │   ├── af
+│   │   │   └── bfc1be2f333ed56e900b3c1c15cf1aca85468f
+│   │   ├── b1
+│   │   │   ├── 2c2e434fc2c515f1dbe35e22bb63fe88a6434a
+│   │   │   └── d7506e4fa59db618cf335293577a3d7fd59cef
+│   │   ├── b4
+│   │   │   ├── 27fb284d92f9c9f67d9203e50e19d41bb516d3
+│   │   │   └── e8842acf78dd1685b7e55e0d8123f7374937bb
+│   │   ├── b5
+│   │   │   └── 524a71ccc4f241d34af566f78e5254f38ac7f4
+│   │   ├── b6
+│   │   │   └── f26c3303f532efbded43a0ea27115b7d2efdde
+│   │   ├── b7
+│   │   │   └── 02680bad54e328e0be4b39160ed5a2f31b6bf7
+│   │   ├── b8
+│   │   │   └── aac4d95cc86d2a5158057b69d17d4f8448e778
+│   │   ├── b9
+│   │   │   └── 52f0efe855bfc3530e9fdb355885cc21072a2f
+│   │   ├── ba
+│   │   │   └── 8183c682e81782bf38f8ff2e6a54b6c0e66c46
+│   │   ├── bc
+│   │   │   └── ef970aa8b4d0b1a980cea9464fdb86cdab131d
+│   │   ├── bd
+│   │   │   └── 0eadd5833e1e3c4b0cdf582ac0ade70e83a909
+│   │   ├── be
+│   │   │   ├── 03ba9940bb49445912d388712125e02f4595d2
+│   │   │   ├── 0958f353f3deebc8e9e7a62de1d82e63f31cf8
+│   │   │   ├── 42ec1849bb0d55dd3692d8c8e7da6f411b964e
+│   │   │   └── 7b79f89433352168c458c08a840ca08de8b6ed
+│   │   ├── bf
+│   │   │   └── 23a8c14cd8935a9011454ad3218fb409e957eb
+│   │   ├── c1
+│   │   │   └── 515fb708d0c24ef9717bba3967cc63c56a42b6
+│   │   ├── c2
+│   │   │   └── 53ec87cecc372b3843bd1f4171adb0f92de744
+│   │   ├── c3
+│   │   │   ├── 45e574c3f6aa4c80dbe497077bc13594ccd57d
+│   │   │   └── 47566b173ea38ec9fd21a176098e5c5b1bb0e3
+│   │   ├── c6
+│   │   │   ├── a4af0d07cf6f007521f3e7df49a688da665f10
+│   │   │   └── ab042069038da76301a365eaae180491263e5a
+│   │   ├── ca
+│   │   │   ├── 5de4ce0c093891abb990107b4cfe90ff72cb66
+│   │   │   └── e8d724be953a18150bccec4e63f00adb3d4690
+│   │   ├── cb
+│   │   │   ├── 193ea4a60f0e40649470554a1429a85cf7b6b1
+│   │   │   ├── a66dd61c805a233634fa310a3149479cc551ce
+│   │   │   └── f3e886dae060ac9ce25b945b09b710944e7704
+│   │   ├── cd
+│   │   │   ├── 56e5b1db84985c9022d6312b688585ba535eba
+│   │   │   └── a0f5dec950fa0dcead27d32356f91972465cf5
+│   │   ├── cf
+│   │   │   ├── a5cb84bb3b71ca9be255d878ba09aa8d2e06b0
+│   │   │   └── de058cafd3345d8c2fcbfb8628b5413c8453ba
+│   │   ├── d1
+│   │   │   └── 7467973c1860dc504e6f2ee14387f3b0171acd
+│   │   ├── d2
+│   │   │   └── af0b2ac289f5a11d7f06822ac5382d48216872
+│   │   ├── d4
+│   │   │   └── 8549c9a3bb15d68fd54e73bf806fea846e0bbe
+│   │   ├── d5
+│   │   │   └── b828d7036ad4ef99f8b49e5ea8872a41a7c880
+│   │   ├── da
+│   │   │   └── 0e676dad8501915303eecd1edc7efae70f5fc0
+│   │   ├── db
+│   │   │   └── 80cf5fd5ed5220ccb416f9301dfeb34e5ffee8
+│   │   ├── dc
+│   │   │   └── d4b643e58e12ab95280c1e82774aa7a0e3f6e4
+│   │   ├── dd
+│   │   │   ├── 1497675a4757b13fc952cc279c1a2f7f8321ad
+│   │   │   └── b4436b45e39eea1dd9ebfa307479bd9b6bc978
+│   │   ├── df
+│   │   │   ├── 137f5078af26c6204476db36df82ae640cae56
+│   │   │   └── e0770424b2a19faf507a501ebfc23be8f54e7b
+│   │   ├── e1
+│   │   │   └── f8e673a3cd876ca0558f8c5b9f5a463ab9a10e
+│   │   ├── e2
+│   │   │   ├── 209d13db0cb24809c0a1c46bb41aba2a1a406e
+│   │   │   └── df108f5f2a127bdc2363b0d83e83937e0bf2f9
+│   │   ├── e3
+│   │   │   └── 6e1d18a75cfcd7c00e2981a4ec4f7ee3da1467
+│   │   ├── e6
+│   │   │   └── 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+│   │   ├── ea
+│   │   │   └── 8caad79b3e69797eb79ee5b4a3c66582a32ba6
+│   │   ├── eb
+│   │   │   ├── c85d596a569f148df12a7d9fa4d9dfc75827ac
+│   │   │   └── cb520e10b3f3e020bc3e903baafaba2ec9aacd
+│   │   ├── ee
+│   │   │   └── 8b01aad5c7ebde0dd52c8a92a86289e7a72bce
+│   │   ├── f0
+│   │   │   ├── 6fed4a9920d6d0d6c6bda84e40f0d4e8b52def
+│   │   │   └── e5370cb2268c9ea66af6df8dfcf14a2c93aa3c
+│   │   ├── f1
+│   │   │   └── e7dbbd2f4f56f58d887aaabd6426b4366c1df8
+│   │   ├── f2
+│   │   │   ├── 8f4a3fbaafb897546edf6f5fa68784b4a93c01
+│   │   │   └── f5ae0e3a6b8c406bd4bad56452e39e52aec31c
+│   │   ├── f3
+│   │   │   └── 535478b339a8e9ce4313821dc7283affd8c1d8
+│   │   ├── f7
+│   │   │   └── 9b9a995d77a39519580c04338359f100df1141
+│   │   ├── fa
+│   │   │   └── a5fe18462c8ea06ba1dd4967c708aac9d296c3
+│   │   ├── fb
+│   │   │   ├── 537e4bb7c992ad119d3aad8be28658891728ab
+│   │   │   ├── 8612eedacb43ca516597dde0318d93c6b3ada6
+│   │   │   └── e4d5b8aec8fc477e4f801ebc4bf6a1ff4cc543
+│   │   ├── fd
+│   │   │   ├── aa5e0aa1fa79d83fb1fa035677ea62f7d63ee7
+│   │   │   └── e9aaf6fd1c08e55faf932c1d7c0dd36074ea12
+│   │   ├── fe
+│   │   │   └── c0375f14143efe7d28a3716c592895a1eef5f6
+│   │   ├── ff
+│   │   │   └── 6d432746c3b85c68492d75668dc42ec80fddb4
+│   │   ├── info
+│   │   └── pack
+│   ├── refs
+│   │   ├── heads
+│   │   │   ├── dev
+│   │   │   ├── fight
+│   │   │   ├── fix-game
+│   │   │   └── main
+│   │   ├── remotes
+│   │   │   └── origin
+│   │   │       ├── dev
+│   │   │       ├── fight
+│   │   │       ├── fix-game
+│   │   │       ├── HEAD
+│   │   │       └── main
+│   │   └── tags
+│   ├── COMMIT_EDITMSG
+│   ├── config
+│   ├── description
+│   ├── FETCH_HEAD
+│   ├── HEAD
+│   ├── index
+│   └── ORIG_HEAD
+├── .vscode
+│   └── settings.json
+├── assets
+│   ├── arenas
+│   │   ├── cave.png
+│   │   ├── forest.png
+│   │   ├── ruins.png
+│   │   └── snow-mountain.png
+│   ├── Intro
+│   │   ├── cover-1.png
+│   │   └── cover-2.png
+│   ├── locations
+│   │   ├── cave.png
+│   │   ├── forest.png
+│   │   ├── lair.png
+│   │   ├── map.png
+│   │   ├── mountain.png
+│   │   ├── ruins.png
+│   │   ├── store.png
+│   │   ├── swamp.png
+│   │   └── town-square.png
+│   ├── monsters
+│   │   ├── cave_troll.png
+│   │   ├── centaur.png
+│   │   ├── dragon.png
+│   │   ├── goblin.png
+│   │   ├── owlbear.png
+│   │   ├── swamp_ghoul.png
+│   │   ├── wolf.png
+│   │   └── wyvern.png
+│   ├── other
+│   │   ├── cave.png
+│   │   ├── dragon.png
+│   │   ├── lose.png
+│   │   └── magic-staff.png
+│   └── hero.png
+├── css
+│   ├── arena.css
+│   ├── map.css
+│   ├── store.css
+│   ├── styles.css
+│   └── town-square.css
+├── html
+│   ├── arena.html
+│   ├── index.html
+│   ├── intro.html
+│   ├── map.html
+│   ├── store.html
+│   └── town-square.html
+├── js
+│   ├── config
+│   │   ├── map-config.js
+│   │   ├── monsters-config.js
+│   │   ├── player-config.js
+│   │   ├── store-config.js
+│   │   └── tools-config.js
+│   ├── controllers
+│   │   ├── BattleController.js
+│   │   ├── MapController.js
+│   │   └── StoreController.js
+│   ├── ui
+│   │   ├── ActionMenu.js
+│   │   ├── InventoryPanel.js
+│   │   ├── Logger.js
+│   │   └── StatusPanel.js
+│   ├── utils
+│   │   └── damageUtils.js
+│   ├── arena.js
+│   ├── battle.js
+│   ├── intro.js
+│   ├── map.js
+│   ├── monsters.js
+│   ├── player-info.js
+│   ├── store.js
+│   └── tools.js
+├── .gitattributes
+├── generate-tree.js
+├── README.md
+└── welcome.js

@@ -28,21 +28,23 @@ function persistPlayer() {
 }
 
 // Public API
-export function showStats(container) {
-  const statsHtml = `
+/**
+ * Fill the #stats-panel inside the modal
+ */
+export function showStats() {
+  const container = document.getElementById("stats-panel");
+  if (!container) return;
+
+  const { level, xp, health, agility, coins, tools } = player;
+  container.innerHTML = `
     <h2>Player Stats</h2>
-    <ul>
-      <li>Level: ${player.level}</li>
-      <li>XP: ${player.xp}</li>
-      <li>Health: ${player.health}</li>
-      <li>Agility: ${player.agility}</li>
-      <li>Coins: ${player.coins.gold} 🥇, ${player.coins.silver} 🥈, ${
-    player.coins.bronze
-  } 🥉</li>
-      <li>Tools: ${player.tools.length ? player.tools.join(", ") : "None"}</li>
-    </ul>
+    <p>Level: ${level}</p>
+    <p>XP: ${xp}</p>
+    <p>Health: ${health}</p>
+    <p>Agility: ${agility}</p>
+    <p>Coins: ${coins.gold}🥇 ${coins.silver}🥈 ${coins.bronze}🥉</p>
+    <p>Tools: ${tools.length ? tools.join(", ") : "None"}</p>
   `;
-  container.innerHTML = statsHtml;
 }
 
 export function updatePlayer(updates) {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dragon Store</title>
+    <!-- point at your css/store.css -->
+    <link rel="stylesheet" href="../css/store.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Dragon Store</h1>
+      <div class="store-currency">
+        🥇 <span id="coin-gold">0</span> 🥈 <span id="coin-silver">0</span> 🥉
+        <span id="coin-bronze">0</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- JS will render into here -->
+      <section id="storeContent"></section>
+
+      <div class="navigation-buttons">
+        <button onclick="window.location.href='map.html'">← Back to Map</button>
+      </div>
+    </main>
+
+    <!-- your store logic only controls #storeContent and updates #coin-* -->
+    <script type="module">
+      import { renderStore } from "../js/store.js";
+      import { player } from "../js/player-info.js";
+      import { updatePlayer } from "../js/player-info.js";
+
+      // initialize with real current coins
+      function showCoins() {
+        document.getElementById("coin-gold").textContent = player.coins.gold;
+        document.getElementById("coin-silver").textContent =
+          player.coins.silver;
+        document.getElementById("coin-bronze").textContent =
+          player.coins.bronze;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        showCoins();
+        const container = document.getElementById("storeContent");
+        renderStore(container, () => showCoins());
+        // pass a callback so renderStore can call it whenever coins change
+      });
+    </script>
+  </body>
+</html>
