@@ -16,7 +16,7 @@ export const toolsConfig = [
     id: "short_sword",
     name: "Short Sword",
     type: "offense",
-    power: 12,
+    power: 1200,
     cost: { gold: 0, silver: 15, bronze: 0 },
     consumable: false,
   },

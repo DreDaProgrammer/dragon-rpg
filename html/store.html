@@ -3,60 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Adventurer’s Store</title>
-    <link rel="stylesheet" href="../css/store.css" type="text/css" />
+    <title>Dragon Store</title>
+    <!-- point at your css/store.css -->
+    <link rel="stylesheet" href="../css/store.css" />
   </head>
   <body>
     <header>
-      <h1>Adventurer’s Store</h1>
+      <h1>Dragon Store</h1>
+      <div class="store-currency">
+        🥇 <span id="coin-gold">0</span> 🥈 <span id="coin-silver">0</span> 🥉
+        <span id="coin-bronze">0</span>
+      </div>
     </header>
 
     <main>
-      <section id="store-content">
-        <!-- 1) Coin display -->
-        <div class="coin-display">
-          🥇 Gold: <span id="goldCount">0</span> 🥈 Silver:
-          <span id="silverCount">0</span> 🥉 Bronze:
-          <span id="bronzeCount">0</span>
-        </div>
+      <div class="store-tabs">
+        <button data-tab="buy" class="active">Buy</button>
+        <button data-tab="sell">Sell</button>
+      </div>
 
-        <!-- 2) Tabs -->
-        <div class="tabs">
-          <button id="buyTab">Buy</button>
-          <button id="sellTab">Sell</button>
-        </div>
+      <div class="filter-tabs">
+        <button data-type="all" class="active">All</button>
+        <button data-type="offense">Offense</button>
+        <button data-type="defense">Defense</button>
+        <button data-type="armor">Armor</button>
+        <button data-type="potion">Potions</button>
+      </div>
 
-        <!-- 3) Filters (only shown on Buy) -->
-        <div class="filters">
-          <button data-type="all">All</button>
-          <button data-type="offense">Offense</button>
-          <button data-type="defense">Defense</button>
-          <button data-type="armor">Armor</button>
-          <button data-type="consumable">Consumables</button>
-        </div>
-
-        <!-- 4) Buy section -->
-        <section id="buy-section">
-          <ul id="buy-list"></ul>
-        </section>
-
-        <!-- 5) Sell section -->
-        <section id="sell-section" style="display: none">
-          <button id="sellAllBtn">Sell All</button>
-          <ul id="sell-list"></ul>
-        </section>
-      </section>
+      <!-- JS will render into here -->
+      <section id="storeContent"></section>
 
       <div class="navigation-buttons">
         <button onclick="window.location.href='map.html'">← Back to Map</button>
       </div>
     </main>
 
-    <!-- only need this one module import now -->
+    <!-- your store logic only controls #storeContent and updates #coin-* -->
     <script type="module">
       import { renderStore } from "../js/store.js";
-      // call immediately since we're at end of body
-      renderStore();
+      import { player } from "../js/player-info.js";
+      import { updatePlayer } from "../js/player-info.js";
+
+      // initialize with real current coins
+      function showCoins() {
+        document.getElementById("coin-gold").textContent = player.coins.gold;
+        document.getElementById("coin-silver").textContent =
+          player.coins.silver;
+        document.getElementById("coin-bronze").textContent =
+          player.coins.bronze;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        showCoins();
+        const container = document.getElementById("storeContent");
+        renderStore(container, () => showCoins());
+        // pass a callback so renderStore can call it whenever coins change
+      });
     </script>
   </body>
 </html>
