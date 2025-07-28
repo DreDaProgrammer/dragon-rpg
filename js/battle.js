@@ -1,4 +1,4 @@
-// battle.js
+// js/battle.js
 // Battle mechanics: damage calculations, victory/defeat handlers
 
 import { player, updatePlayer, addXp, addCoins } from "./player-info.js";
@@ -6,17 +6,14 @@ import { defaultPlayerConfig } from "./config/player-config.js";
 import { getToolById } from "./tools.js";
 
 /**
- * Determine the player's weapon power (highest tool or base fist)
+ * Determine the player's weapon power (only the equipped tool, or base fist)
  * @returns {number}
  */
 function getPlayerWeaponPower() {
-  if (!player.tools.length) return 5;
-  let maxPower = 0;
-  player.tools.forEach((id) => {
-    const tool = getToolById(id);
-    if (tool && tool.power > maxPower) maxPower = tool.power;
-  });
-  return maxPower > 0 ? maxPower : 5;
+  const wid = player.equippedCombatToolId;
+  if (!wid) return 5; // base fist
+  const tool = getToolById(wid);
+  return tool && tool.power ? tool.power : 5;
 }
 
 /**
@@ -26,9 +23,11 @@ function getPlayerWeaponPower() {
  * @returns {number}
  */
 function calculateDamage(power, agility) {
-  // Base damage plus random up to agility
-  const base = Math.floor(power * 0.7);
-  return base + Math.floor(Math.random() * (agility + 1));
+  // 50%–150% of power plus up to agility
+  const min = Math.floor(power * 0.5);
+  const rollPower = min + Math.floor(Math.random() * (power + 1 - min));
+  const rollAgi = Math.floor(Math.random() * (agility + 1));
+  return rollPower + rollAgi;
 }
 
 /**
@@ -39,9 +38,7 @@ function calculateDamage(power, agility) {
 export function playerAttack(monster) {
   const power = getPlayerWeaponPower();
   const damage = calculateDamage(power, player.agility);
-  monster.currentHealth -= damage;
-  // Ensure monster health doesn't go below zero
-  monster.currentHealth = Math.max(0, monster.currentHealth);
+  monster.currentHealth = Math.max(0, monster.currentHealth - damage);
   return damage;
 }
 
@@ -51,12 +48,10 @@ export function playerAttack(monster) {
  * @returns {number} damage dealt
  */
 export function monsterAttack(monster) {
-  const power = monster.power;
-  const damage = calculateDamage(power, monster.agility);
-  // Reduce player health and prevent negative values
-  const newHealth = Math.max(0, player.health - damage);
-  player.health = newHealth;
-  updatePlayer({ health: newHealth });
+  const damage = calculateDamage(monster.power, monster.agility);
+  const newH = Math.max(0, player.health - damage);
+  player.health = newH;
+  updatePlayer({ health: newH });
   return damage;
 }
 
@@ -65,11 +60,11 @@ export function monsterAttack(monster) {
  * @param {Object} monster - original config with rewards
  */
 export function handleVictory(monster) {
-  // Award XP and coins
   addXp(monster.xpReward);
   addCoins(monster.coinReward);
   alert(
-    `Victory! You gained ${monster.xpReward} XP and ${monster.coinReward.gold}🥇 ${monster.coinReward.silver}🥈 ${monster.coinReward.bronze}🥉.`
+    `Victory! You gained ${monster.xpReward} XP and ` +
+      `${monster.coinReward.gold}🥇 ${monster.coinReward.silver}🥈 ${monster.coinReward.bronze}🥉.`
   );
 }
 
