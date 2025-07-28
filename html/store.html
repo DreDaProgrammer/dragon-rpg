@@ -2,61 +2,61 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Dragon Store — The Dragon’s Shadow</title>
-    <link rel="stylesheet" href="css/store.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adventurer’s Store</title>
+    <link rel="stylesheet" href="../css/store.css" type="text/css" />
   </head>
   <body>
     <header>
-      <h1>Dragon Store</h1>
-      <div class="store-currency">
-        Coins:
-        <span id="goldCount">0</span>🥇 <span id="silverCount">0</span>🥈
-        <span id="bronzeCount">0</span>🥉
-      </div>
+      <h1>Adventurer’s Store</h1>
     </header>
 
-    <nav class="tabs">
-      <button id="buyTab" class="active">Buy</button>
-      <button id="sellTab">Sell</button>
-    </nav>
-
-    <nav class="filters">
-      <button data-type="all" class="active">All</button>
-      <button data-type="offense">Offense</button>
-      <button data-type="defense">Defense</button>
-      <button data-type="armor">Armor</button>
-      <button data-type="potion">Potions</button>
-    </nav>
-
     <main>
-      <!-- Buy section -->
-      <section id="buy-section">
-        <ul id="buy-list" class="store-list"></ul>
+      <section id="store-content">
+        <!-- 1) Coin display -->
+        <div class="coin-display">
+          🥇 Gold: <span id="goldCount">0</span> 🥈 Silver:
+          <span id="silverCount">0</span> 🥉 Bronze:
+          <span id="bronzeCount">0</span>
+        </div>
+
+        <!-- 2) Tabs -->
+        <div class="tabs">
+          <button id="buyTab">Buy</button>
+          <button id="sellTab">Sell</button>
+        </div>
+
+        <!-- 3) Filters (only shown on Buy) -->
+        <div class="filters">
+          <button data-type="all">All</button>
+          <button data-type="offense">Offense</button>
+          <button data-type="defense">Defense</button>
+          <button data-type="armor">Armor</button>
+          <button data-type="consumable">Consumables</button>
+        </div>
+
+        <!-- 4) Buy section -->
+        <section id="buy-section">
+          <ul id="buy-list"></ul>
+        </section>
+
+        <!-- 5) Sell section -->
+        <section id="sell-section" style="display: none">
+          <button id="sellAllBtn">Sell All</button>
+          <ul id="sell-list"></ul>
+        </section>
       </section>
-      <!-- Sell section -->
-      <section id="sell-section" style="display: none">
-        <button id="sellAllBtn">Sell All</button>
-        <ul id="sell-list" class="store-list"></ul>
-      </section>
+
+      <div class="navigation-buttons">
+        <button onclick="window.location.href='map.html'">← Back to Map</button>
+      </div>
     </main>
 
-    <div class="navigation-buttons">
-      <button id="backBtn">← Back to Map</button>
-    </div>
-
-    <!-- Core Scripts -->
-    <script type="module" src="config/player-config.js"></script>
-    <script type="module" src="player-info.js"></script>
-    <script type="module" src="config/tools-config.js"></script>
-    <script type="module" src="tools.js"></script>
-    <script type="module" src="store.js"></script>
+    <!-- only need this one module import now -->
     <script type="module">
-      import { renderStore } from "./store.js";
-      document
-        .getElementById("backBtn")
-        .addEventListener("click", () => (window.location.href = "map.html"));
-      document.addEventListener("DOMContentLoaded", () => renderStore());
+      import { renderStore } from "../js/store.js";
+      // call immediately since we're at end of body
+      renderStore();
     </script>
   </body>
 </html>
