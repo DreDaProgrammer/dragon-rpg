@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dragon RPG — Arena</title>
-    <link rel="stylesheet" href="/css/arena.css" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/arena.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
       rel="stylesheet"
@@ -28,14 +30,20 @@
 
       <!-- Player Status -->
       <div id="player-status">
-        <img id="player-portrait" src="assets/hero.png" alt="Player Portrait" />
+        <img
+          id="player-portrait"
+          src="../assets/hero.png"
+          alt="Player Portrait"
+        />
         <div class="status-info">
           <p class="name">Hero</p>
           <p>
-            HP: <span id="playerHp">0</span> / <span id="playerMaxHp">0</span>
+            HP: <span id="playerHp">0</span> /
+            <span id="playerMaxHp">0</span>
           </p>
           <p>
-            MP: <span id="playerMp">0</span> / <span id="playerMaxMp">0</span>
+            MP: <span id="playerMp">0</span> /
+            <span id="playerMaxMp">0</span>
           </p>
           <p>Lv. <span id="playerLevel">0</span></p>
         </div>
@@ -45,22 +53,24 @@
       <div id="monster-status">
         <p><strong id="monsterName"></strong></p>
         <p>
-          HP: <span id="monsterHp">0</span> / <span id="monsterMaxHp">0</span>
+          HP: <span id="monsterHp">0</span> /
+          <span id="monsterMaxHp">0</span>
         </p>
       </div>
 
       <!-- Battle Log -->
       <div id="battle-log"></div>
+
       <!-- Inventory Panel (hidden until you choose “Items”) -->
       <div id="inventory-panel" style="display: none"></div>
     </div>
 
-    <!-- Core scripts (no inline logic) -->
-    <script type="module" src="config/tools-config.js"></script>
-    <script type="module" src="config/monsters-config.js"></script>
-    <script type="module" src="tools.js"></script>
-    <script type="module" src="player-info.js"></script>
-    <script type="module" src="battle.js"></script>
-    <script type="module" src="arena.js"></script>
+    <!-- Core scripts (all modules live under /js) -->
+    <script type="module" src="../js/config/tools-config.js"></script>
+    <script type="module" src="../js/config/monsters-config.js"></script>
+    <script type="module" src="../js/tools.js"></script>
+    <script type="module" src="../js/player-info.js"></script>
+    <script type="module" src="../js/battle.js"></script>
+    <script type="module" src="../js/arena.js"></script>
   </body>
 </html>

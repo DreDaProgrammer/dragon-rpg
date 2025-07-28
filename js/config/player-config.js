@@ -3,14 +3,14 @@ export const STORAGE_KEY = "dragonRPG_player";
 
 export const defaultPlayerConfig = {
   coins: {
-    gold: 1000,
-    silver: 1000,
-    bronze: 1000,
+    gold: 100,
+    silver: 100,
+    bronze: 100,
   },
-  health: 1000,
+  health: 100,
   xp: 10,
-  power: 100,
-  agility: 150,
+  power: 10,
+  agility: 10,
   level: 10,
   tools: [], // array of tool IDs
 };

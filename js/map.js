@@ -1,16 +1,14 @@
-// map.js
+// js/map.js
 import { locationsConfig } from "./config/map-config.js";
 import { getMonstersByLocation } from "./monsters.js";
-import { renderArena } from "./arena.js";
 
-// Build path helper
+// helper for location background images
 function getLocationImagePath(id) {
-  return `assets/locations/${id}.png`;
+  return `../assets/locations/${id}.png`;
 }
 
 const container = document.getElementById("map-content");
 
-// Kick off the menu
 document.addEventListener("DOMContentLoaded", renderMapUI);
 
 function renderMapUI() {
@@ -28,7 +26,6 @@ function renderMapUI() {
 
     btn.addEventListener("click", () => {
       if (loc.id === "store") {
-        // simply redirect to store.html
         window.location.href = "store.html";
       } else if (loc.id === "town_square") {
         window.location.href = "index.html";
@@ -65,12 +62,13 @@ function renderLocationUI(locationId) {
   getMonstersByLocation(locationId).forEach((mon) => {
     const li = document.createElement("li");
     const img = document.createElement("img");
-    img.src = `assets/monsters/${mon.id}.png`;
+    img.src = `../assets/monsters/${mon.id}.png`;
     img.alt = mon.name;
     img.className = "monster-img";
 
     const info = document.createElement("div");
-    info.innerHTML = `<strong>${mon.name}</strong><br/>Power: ${mon.power}, Agility: ${mon.agility}`;
+    info.innerHTML = `<strong>${mon.name}</strong><br/>
+                      Power: ${mon.power}, Agility: ${mon.agility}`;
 
     const fight = document.createElement("button");
     fight.textContent = `Fight ${mon.name}`;

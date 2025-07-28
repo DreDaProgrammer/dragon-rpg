@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Town Square - The Dragon’s Shadow</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Town Square</h1>
+    </header>
+    <main>
+      <p>You stand in the bustling town square of Embervale.</p>
+      <div class="menu">
+        <button id="newGameBtn">New Game</button>
+        <button id="statsBtn">Show Stats</button>
+        <button id="mapBtn">Open Map</button>
+      </div>
+      <section id="content"></section>
+    </main>
+
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="modal hidden">
+      <div class="modal-content">
+        <button id="closeStats" class="modal-close">&times;</button>
+        <div id="stats-panel" class="stats-panel"></div>
+      </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script type="module" src="../js/config/map-config.js"></script>
+    <script type="module" src="../js/config/monsters-config.js"></script>
+    <script type="module" src="../js/config/player-config.js"></script>
+    <script type="module" src="../js/config/tools-config.js"></script>
+
+    <script type="module" src="../js/arena.js"></script>
+    <script type="module" src="../js/battle.js"></script>
+    <script type="module" src="../js/map.js"></script>
+    <script type="module" src="../js/monsters.js"></script>
+    <script type="module" src="../js/player-info.js"></script>
+    <script type="module" src="../js/tools.js"></script>
+
+    <script type="module">
+      import {
+        STORAGE_KEY,
+        defaultPlayerConfig,
+      } from "../js/config/player-config.js";
+      import { showStats } from "../js/player-info.js";
+
+      // New Game: reset player data
+      document.getElementById("newGameBtn").addEventListener("click", () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPlayerConfig));
+        window.location.reload();
+      });
+
+      // Show the stats popup
+      document.getElementById("statsBtn").addEventListener("click", () => {
+        showStats(); // fills #stats-panel
+        document.getElementById("stats-modal").classList.remove("hidden");
+      });
+
+      // Close the popup
+      document.getElementById("closeStats").addEventListener("click", () => {
+        document.getElementById("stats-modal").classList.add("hidden");
+      });
+
+      // Open Map → Navigate to map page
+      document.getElementById("mapBtn").addEventListener("click", () => {
+        window.location.href = "map.html";
+      });
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Orbitron", "Trebuchet MS", sans-serif;
-  background: #000 url("assets/backgrounds/arena-bg.jpg") center/cover no-repeat;
+  background: #000 url("../assets/locations/ruins.png") center/cover no-repeat;
   color: white;
   overflow: hidden;
 }
@@ -103,14 +103,14 @@ body {
   font-size: 0.95rem;
 }
 
-/* ───────────── BATTLE LOG ───────────── */
+/* ───────────── BATTLE LOG (Centered) ───────────── */
 #battle-log {
   position: absolute;
-  bottom: 20px;
+  top: 30%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  max-height: 160px;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  max-height: 40vh;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.6);
   padding: 10px;
@@ -186,4 +186,47 @@ button:focus {
 }
 #inventory-panel > button:hover {
   background: #a00;
+}
+/* Log Tabs */
+#log-tabs {
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+#log-tabs button {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #333;
+  padding: 6px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+#log-tabs button.active {
+  background: #00ccff;
+  color: #000;
+}
+
+/* Current log (already styled) */
+/* History log: same style as battle-log but hidden by default */
+#history-log {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-height: 160px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+#history-log p {
+  margin: 4px 0;
 }
