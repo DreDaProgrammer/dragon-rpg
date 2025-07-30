@@ -1,0 +1,68 @@
+/* victory.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #000;
+  font-family: "Cinzel", serif;
+  color: #f8f0e3;
+  text-align: center;
+}
+
+#victory-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border: 2px solid #d4af37;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  max-width: 400px;
+  width: 90%;
+}
+
+#victory-container h1 {
+  font-size: 2.5rem;
+  color: #d4af37;
+  text-shadow: 1px 1px 4px #000;
+  margin-bottom: 1rem;
+}
+
+#victory-image {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.rewards {
+  margin: 1rem 0;
+}
+
+.rewards p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+button#btn-town {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: #d4af37;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button#btn-town:hover {
+  background: #bfa02f;
+}

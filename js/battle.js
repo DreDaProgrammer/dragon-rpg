@@ -73,5 +73,4 @@ export function handleVictory(monster) {
  */
 export function handleDefeat() {
   updatePlayer({ health: defaultPlayerConfig.health });
-  alert("You have been defeated and wake up back in town, fully healed.");
 }
