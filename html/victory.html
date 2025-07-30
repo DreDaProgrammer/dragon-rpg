@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Victory — The Dragon’s Shadow</title>
+    <link rel="stylesheet" href="../css/victory.css" />
+  </head>
+  <body>
+    <div id="victory-container">
+      <h1>Victory!</h1>
+      <img
+        src="../assets/cut-scene/victory.png"
+        alt="Victory Celebration"
+        id="victory-image"
+      />
+      <p>You’ve defeated <strong id="monster-name">—</strong>!</p>
+      <div class="rewards">
+        <p>XP Gained: <span id="xp-earned">0</span></p>
+        <p>
+          Coins Earned:
+          <span id="gold-earned">0</span>🥇 <span id="silver-earned">0</span>🥈
+          <span id="bronze-earned">0</span>🥉
+        </p>
+      </div>
+      <button id="btn-town">Go Back to Town Square</button>
+    </div>
+
+    <script>
+      // Pull rewards from localStorage
+      const data = JSON.parse(
+        localStorage.getItem("lastBattleRewards") || "{}"
+      );
+
+      document.getElementById("monster-name").textContent =
+        data.monsterName || "the foe";
+      document.getElementById("xp-earned").textContent = data.xp || 0;
+      document.getElementById("gold-earned").textContent =
+        (data.coins && data.coins.gold) || 0;
+      document.getElementById("silver-earned").textContent =
+        (data.coins && data.coins.silver) || 0;
+      document.getElementById("bronze-earned").textContent =
+        (data.coins && data.coins.bronze) || 0;
+
+      // Hook button
+      document.getElementById("btn-town").addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

@@ -7,7 +7,6 @@ import { getToolById } from "../tools.js";
 import {
   playerAttack as calculatePlayerDamage,
   monsterAttack as calculateMonsterDamage,
-  handleVictory,
   handleDefeat,
 } from "../battle.js";
 
@@ -46,7 +45,6 @@ export class BattleController {
     // clear log and redraw UI
     this.logger.clear();
     this.actionMenu.render();
-    // ← use update(), not render()
     this.statusPanel.update(player, this.currentMonster);
 
     this.logger.log(`Battle begins against ${monsterConfig.name}!`);
@@ -82,15 +80,29 @@ export class BattleController {
 
   playerAttack() {
     this.awaitingPlayerAction = false;
+
+    // calculate and apply damage
     const dmg = calculatePlayerDamage(this.currentMonster);
     this.logger.log(`You deal ${dmg} damage.`);
     this.statusPanel.update(player, this.currentMonster);
 
-    if (this.currentMonster.currentHealth === 0) {
-      handleVictory(this.currentMonster);
-      this.redirectToTown();
+    // if monster is down → save rewards & redirect to victory
+    if (this.currentMonster.currentHealth <= 0) {
+      localStorage.setItem(
+        "lastBattleRewards",
+        JSON.stringify({
+          monsterName: this.currentMonster.name,
+          xp: this.currentMonster.xpReward,
+          coins: this.currentMonster.coinReward,
+        })
+      );
+      // delay so log can render
+      setTimeout(() => {
+        window.location.href = "victory.html";
+      }, 500);
       return;
     }
+
     this.endPlayerTurn();
   }
 
@@ -110,7 +122,7 @@ export class BattleController {
     this.awaitingPlayerAction = false;
     if (Math.random() > 0.5) {
       this.logger.log("You successfully fled!");
-      setTimeout(() => this.redirectToTown(), 800);
+      setTimeout(() => (window.location.href = "index.html"), 800);
     } else {
       this.logger.log("Escape failed.");
       this.endPlayerTurn();
@@ -126,22 +138,20 @@ export class BattleController {
     this.logger.log(`${this.currentMonster.name} deals ${dmg} damage.`);
     this.statusPanel.update(player, this.currentMonster);
 
-    if (player.health === 0) {
+    // if player is defeated → save monster name and redirect to defeat
+    if (player.health <= 0) {
       handleDefeat();
-      this.redirectToTown();
+      localStorage.setItem(
+        "lastBattleRewards",
+        JSON.stringify({ monsterName: this.currentMonster.name })
+      );
+      setTimeout(() => {
+        window.location.href = "defeat.html";
+      }, 500);
       return;
     }
 
     this.awaitingPlayerAction = true;
     this.logger.log("Your turn.");
-  }
-
-  /**
-   * After victory/defeat or escape, go back home after 3 seconds.
-   */
-  redirectToTown() {
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
   }
 }

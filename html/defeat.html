@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Defeat — The Dragon’s Shadow</title>
+    <link rel="stylesheet" href="../css/defeat.css" />
+  </head>
+  <body>
+    <div id="defeat-container">
+      <h1>Defeat…</h1>
+      <img
+        src="../assets/cut-scene/defeat.png"
+        alt="Defeat Scene"
+        id="defeat-image"
+      />
+      <p>You were defeated by <strong id="monster-name">—</strong>.</p>
+      <button id="btn-town">Return to Town Square</button>
+    </div>
+
+    <script>
+      // Grab the name of the monster from lastBattleRewards
+      const data = JSON.parse(
+        localStorage.getItem("lastBattleRewards") || "{}"
+      );
+      document.getElementById("monster-name").textContent =
+        data.monsterName || "your foe";
+
+      // Button back to town
+      document.getElementById("btn-town").addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

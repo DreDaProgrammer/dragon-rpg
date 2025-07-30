@@ -24,7 +24,7 @@ export const toolsConfig = [
     id: "longsword",
     name: "Longsword",
     type: "offense",
-    power: 20,
+    power: 100,
     cost: { gold: 1, silver: 0, bronze: 0 },
     consumable: false,
   },
