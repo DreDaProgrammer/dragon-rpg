@@ -46,9 +46,12 @@
         STORAGE_KEY,
         defaultPlayerConfig,
       } from "../js/config/player-config.js";
-      import { showStats } from "../js/player-info.js";
+      import { updatePlayer, showStats } from "../js/player-info.js";
 
-      // New Game: reset player data
+      // Whenever we land on Town Square, restore full health
+      updatePlayer({ health: defaultPlayerConfig.health });
+
+      // New Game: reset all player data
       document.getElementById("newGameBtn").addEventListener("click", () => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPlayerConfig));
         window.location.reload();
