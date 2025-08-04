@@ -33,7 +33,7 @@ body {
 #action-menu {
   position: absolute;
   top: 60px;
-  left: 1250px;
+  left: 75vw;
   display: flex;
   flex-direction: column;
   gap: 10px;
