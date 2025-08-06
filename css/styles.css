@@ -419,3 +419,23 @@ button:disabled {
   font-size: 1rem;
   line-height: 1.4;
 }
+
+/* Stats Modal — Tools section */
+.tools-section {
+  margin-top: 1rem;
+}
+.tools-section h3 {
+  color: #d4af37;
+  margin-bottom: 0.5rem;
+}
+.tools-list {
+  list-style: none;
+  max-height: 8rem; /* adjust as needed */
+  overflow-y: auto;
+  padding-left: 1rem;
+  text-align: left;
+}
+.tools-list li {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
