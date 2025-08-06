@@ -1,4 +1,5 @@
-/* player-config.js */
+// js/config/player-config.js
+
 export const STORAGE_KEY = "dragonRPG_player";
 
 export const defaultPlayerConfig = {
@@ -12,12 +13,8 @@ export const defaultPlayerConfig = {
   power: 10,
   agility: 10,
   level: 10,
-  tools: [], // array of tool IDs
+  tools: [], // array of owned tool IDs
+  equippedCombatToolId: null, // currently equipped weapon
+  equippedShieldId: null, // currently equipped shield
+  equippedArmorId: null, // currently equipped armor
 };
-
-export const coins = defaultPlayerConfig.coins;
-export const health = defaultPlayerConfig.health;
-export const xp = defaultPlayerConfig.xp;
-export const agility = defaultPlayerConfig.agility;
-export const level = defaultPlayerConfig.level;
-export const tools = defaultPlayerConfig.tools;
