@@ -13,10 +13,11 @@ export class InventoryPanel {
     this.container.innerHTML = "";
     this.container.style.display = "block";
 
-    // Sections we support
+    // Now includes Weapons, Shields, Armor, Potions
     const sections = [
       { title: "Weapons", type: "offense" },
       { title: "Shields", type: "defense" },
+      { title: "Armor", type: "armor" },
       { title: "Potions", type: "potion" },
     ];
 
@@ -44,40 +45,48 @@ export class InventoryPanel {
         if (type === "potion") {
           btn.textContent = "Use";
           btn.onclick = () => {
-            // Heal effect
+            // Heal
             if (tool.effect.heal) {
               player.health = Math.min(
                 defaultPlayerConfig.health,
                 player.health + tool.effect.heal
               );
             }
-            // Buff effect
+            // Buff power
             if (tool.effect.power) {
               player.buffPower = (player.buffPower || 0) + tool.effect.power;
             }
-            // Remove one potion
+            // Remove potion
             player.tools.splice(idx, 1);
             updatePlayer({ health: player.health, tools: player.tools });
             this.close();
           };
         } else {
-          // offense or defense
-          const isEquipped =
-            type === "offense"
-              ? player.equippedCombatToolId === toolId
-              : player.equippedShieldId === toolId;
+          // offense, defense or armor
+          let isEquipped = false;
+          if (type === "offense")
+            isEquipped = player.equippedCombatToolId === toolId;
+          if (type === "defense")
+            isEquipped = player.equippedShieldId === toolId;
+          if (type === "armor") isEquipped = player.equippedArmorId === toolId;
 
           btn.textContent = isEquipped ? "Unequip" : "Equip";
           btn.onclick = () => {
             if (type === "offense") {
               player.equippedCombatToolId = isEquipped ? null : toolId;
-            } else {
+            } else if (type === "defense") {
               player.equippedShieldId = isEquipped ? null : toolId;
+            } else if (type === "armor") {
+              player.equippedArmorId = isEquipped ? null : toolId;
             }
+
+            // persist all three in one call
             updatePlayer({
               equippedCombatToolId: player.equippedCombatToolId,
               equippedShieldId: player.equippedShieldId,
+              equippedArmorId: player.equippedArmorId,
             });
+
             this.close();
           };
         }
