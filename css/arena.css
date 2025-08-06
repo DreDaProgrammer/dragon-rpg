@@ -1,28 +1,45 @@
+/* arena.css */
+
 /* ───────────── GLOBAL RESET ───────────── */
-body {
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
   font-family: "Orbitron", "Trebuchet MS", sans-serif;
   background: #000 url("../assets/locations/ruins.png") center/cover no-repeat;
   color: white;
   overflow: hidden;
 }
 
-/* Container for all battle UI */
+/* ───────────── BATTLE UI CONTAINER ───────────── */
 #battle-ui {
   position: relative;
+  display: grid;
+  grid-template-areas:
+    "monster turn"
+    "menu   status"
+    "log    status"
+    "log    status";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 /* ───────────── TURN INDICATOR ───────────── */
 #turn-indicator {
-  position: absolute;
-  top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.5rem;
+  grid-area: turn;
+  justify-self: end;
+  font-size: 1.25rem;
   letter-spacing: 2px;
   color: #00ccff;
   text-shadow: 0 0 8px #00ccff;
@@ -31,26 +48,22 @@ body {
 
 /* ───────────── ACTION MENU ───────────── */
 #action-menu {
-  position: absolute;
-  top: 60px;
-  left: 1250px;
+  grid-area: menu;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.5rem;
 }
-
 #action-menu .menu-item {
   background: rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   color: white;
   text-align: left;
   border-radius: 6px;
-  transition: 0.2s ease;
-  width: 160px;
+  transition: all 0.2s ease;
+  width: 100%;
 }
-
 #action-menu .menu-item:hover,
 #action-menu .menu-item.active {
   background: rgba(0, 204, 255, 0.3);
@@ -61,66 +74,57 @@ body {
 
 /* ───────────── PLAYER STATUS PANEL ───────────── */
 #player-status {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  width: 220px;
+  grid-area: status;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #444;
-  padding: 12px;
+  padding: 0.75rem;
   border-radius: 8px;
   text-align: center;
+  width: 14rem;
 }
-
-#player-portrait {
-  width: 120px;
-  height: auto;
+#player-status img {
+  width: 100%;
+  max-width: 120px;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
   box-shadow: 0 0 6px rgba(0, 204, 255, 0.5);
 }
-
-.status-info .name {
+#player-status .status-info .name {
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 4px;
 }
-
-.status-info p {
-  margin: 4px 0;
+#player-status .status-info p {
+  margin: 0.25rem 0;
   font-size: 0.9rem;
 }
 
 /* ───────────── MONSTER STATUS ───────────── */
 #monster-status {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  grid-area: monster;
   background: rgba(0, 0, 0, 0.65);
   border: 1px solid #444;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.95rem;
+  justify-self: start;
 }
 
-/* ───────────── BATTLE LOG (Centered) ───────────── */
+/* ───────────── BATTLE LOG (CURRENT TURN) ───────────── */
 #battle-log {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  max-height: 40vh;
+  grid-area: log;
+  justify-self: center;
+  align-self: start;
+  width: 60%;
+  max-height: 40%;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.6);
-  padding: 10px;
+  padding: 0.75rem;
   border-radius: 6px;
   font-size: 1rem;
   line-height: 1.4;
   border: 1px solid #333;
 }
-
-/* Scrollbar styling for log */
+/* Scrollbar styling */
 #battle-log::-webkit-scrollbar {
   width: 6px;
 }
@@ -129,48 +133,40 @@ body {
   border-radius: 4px;
 }
 
-/* ───────────── GENERAL BUTTON LOOK ───────────── */
-button {
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 1px;
-}
-
-button:focus {
-  outline: none;
-  box-shadow: 0 0 6px #00ccff;
-}
-
-/* at the bottom of arena.css */
+/* ───────────── INVENTORY PANEL ───────────── */
 #inventory-panel {
   position: absolute;
-  top: 100px;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.85);
-  padding: 20px;
+  padding: 1rem;
   border: 1px solid #00ccff;
   border-radius: 8px;
-  max-width: 300px;
+  max-width: 90%;
+  width: 20rem;
   color: white;
   z-index: 10;
 }
 #inventory-panel h3 {
-  margin-top: 0;
+  margin-bottom: 0.5rem;
   color: #00ccff;
 }
 #inventory-panel ul {
   list-style: none;
-  padding: 0;
+  max-height: 10rem;
+  overflow-y: auto;
+  margin-bottom: 0.5rem;
 }
 #inventory-panel li {
-  margin: 8px 0;
   display: flex;
   justify-content: space-between;
+  margin: 0.25rem 0;
 }
 #inventory-panel button {
   background: #337;
   border: none;
-  padding: 4px 8px;
+  padding: 0.25rem 0.5rem;
   color: white;
   border-radius: 4px;
   cursor: pointer;
@@ -179,54 +175,106 @@ button:focus {
   background: #559;
 }
 #inventory-panel > button {
-  /* cancel */
-  margin-top: 12px;
   width: 100%;
+  margin-top: 0.75rem;
   background: #800;
 }
 #inventory-panel > button:hover {
   background: #a00;
 }
-/* Log Tabs */
+
+/* ───────────── LOG TABS ───────────── */
 #log-tabs {
   position: absolute;
-  bottom: 200px;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
 }
 #log-tabs button {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #333;
-  padding: 6px 12px;
+  padding: 0.5rem 0.75rem;
   color: #fff;
   cursor: pointer;
   border-radius: 4px;
+  font-size: 0.9rem;
 }
 #log-tabs button.active {
   background: #00ccff;
   color: #000;
 }
 
-/* Current log (already styled) */
-/* History log: same style as battle-log but hidden by default */
+/* ───────────── HISTORY LOG ───────────── */
 #history-log {
   position: absolute;
-  bottom: 20px;
+  bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
-  max-height: 160px;
+  max-height: 25%;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.6);
-  padding: 10px;
+  padding: 0.75rem;
   border-radius: 6px;
   border: 1px solid #333;
-  color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.4;
+  color: #fff;
 }
 #history-log p {
-  margin: 4px 0;
+  margin: 0.25rem 0;
+}
+
+/* ───────────── GENERAL BUTTON STYLING ───────────── */
+button {
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 1px;
+}
+button:focus {
+  outline: none;
+  box-shadow: 0 0 6px #00ccff;
+}
+
+/* ───────────── RESPONSIVE BREAKPOINTS ───────────── */
+@media (max-width: 1024px) {
+  #battle-log {
+    width: 80%;
+  }
+  #action-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #player-status {
+    justify-self: center;
+    grid-column: span 2;
+  }
+  #turn-indicator {
+    justify-self: center;
+  }
+}
+@media (max-width: 768px) {
+  #battle-ui {
+    grid-template-areas:
+      "turn"
+      "monster"
+      "status"
+      "menu"
+      "log";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  #battle-log {
+    width: 100%;
+  }
+  #history-log {
+    width: 100%;
+  }
+  #inventory-panel {
+    width: 90%;
+  }
 }
